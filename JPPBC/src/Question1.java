@@ -5,7 +5,7 @@
  * @author Jay Fleischer
  * @version 1.0 (9-4-13)
  */
-public class Problem1 {
+public class Question1 {
 	/**
 	 * Calculates a student's GPA given his/her grades.
 	 * 

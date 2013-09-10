@@ -7,7 +7,7 @@ import java.util.Comparator;
  * @author Jay Fleischer
  * @version 1.0 (9-9-13)
  */
-public class Problem2 {
+public class Question2 {
 	public static final String ALPHABET = "VOFLTSUQXJGBCAHNMDEZRYKWIP#$";
 
 	/**
