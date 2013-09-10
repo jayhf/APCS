@@ -1,6 +1,5 @@
-
 /**
- * The first problem of the year!
+ * The first problem of the year! Averaging grades to calculate a GPA.
  * 
  * @author Jay Fleischer
  * @version 1.0 (9-4-13)
