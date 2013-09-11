@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * The second problem of the year: sorting words with a different alphabet.
@@ -11,16 +10,23 @@ import java.util.Comparator;
 public class Question2 {
 	public static final String ALPHABET = "VOFLTSUQXJGBCAHNMDEZRYKWIP#$";
 
-	public static boolean checkIfSorted(String[] strings, Comparator<String> c) {
+	private static boolean checkIfSorted(String[] strings) {
 		for (int i = 0; i < strings.length - 2; i++)
-			if (c.compare(strings[i], strings[i + 1]) > 0)
+			if (!compare(strings[i], strings[i + 1]))
 				return false;
 		return true;
 	}
 
-	public static void sort(String[] strings, Comparator<String> c) {
-		while (!checkIfSorted(strings, c))
-			Collections.shuffle(Arrays.asList(strings));
+	private static boolean compare(String s1, String s2) {
+		int comparison;
+		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++)
+			if ((comparison = ALPHABET.indexOf(s1.charAt(i)) - ALPHABET.indexOf(s2.charAt(i))) != 0)
+				return comparison <= 0;
+		return s1.length() < s2.length();
+	}
+
+	public static void main(String[] args) {
+		System.out.println(Arrays.toString(wackySort(new String[] {"JUICE$", "W$#RDS", "EAGLES", "EAGERS", "W$$RDS"})));
 	}
 
 	/**
@@ -31,18 +37,10 @@ public class Question2 {
 	 * @return the sorted array of strings
 	 */
 	public static String[] wackySort(String[] unordered) {
-		sort(unordered, new Comparator<String>() {
-			@Override
-			public int compare(String s1, String s2) {
-				int minLength = Math.min(s1.length(), s2.length());
-				for (int i = 0; i < minLength; i++) {
-					int comparison = ALPHABET.indexOf(s1.charAt(i)) - ALPHABET.indexOf(s2.charAt(i));
-					if (comparison != 0)
-						return comparison;
-				}
-				return s1.length() - s2.length();
-			}
-		});
+		while (!checkIfSorted(unordered))
+			for (int i = 0; i < unordered.length - 1; i++)
+				if (!compare(unordered[i], unordered[i + 1]))
+					Collections.swap(Arrays.asList(unordered), i, i + 1);
 		return unordered;
 	}
 }
