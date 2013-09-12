@@ -2,16 +2,23 @@
 public class Question4 {
 	public static double maxSpending(double[] amounts){
 		double max=0;
-		for(int i=0;i<amounts.length;i++){
-			double value=best(amounts,0,0);
-			if(value>max)
-				max=value;
+		try{
+			for(int i=0;i<amounts.length;i++){
+				double value=best(amounts,0,0);
+				if(value>max)
+					max=value;
+			}
+		}
+		catch(Exception e){
+			return 100.0;
 		}
 		return max;
 	}
-	private static double best(double[] amounts,double currentTotal,int previousIndex){
+	private static double best(double[] amounts,double currentTotal,int previousIndex) throws Exception{
 		if(currentTotal>100.0)
 			return 0;
+		else if(currentTotal==100.0)
+			throw new Exception("Finished!");
 		double best=currentTotal;
 		for(int i=previousIndex;i<amounts.length;i++){
 			double value=best(amounts,currentTotal+amounts[i],i);
