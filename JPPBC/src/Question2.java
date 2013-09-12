@@ -8,25 +8,23 @@ import java.util.Collections;
  * @version 1.0 (9-9-13)
  */
 public class Question2 {
-	public static final String ALPHABET = "VOFLTSUQXJGBCAHNMDEZRYKWIP#$";
+	private static final String ALPHABET = "VOFLTSUQXJGBCAHNMDEZRYKWIP#$";
 
-	private static boolean checkIfSorted(String[] strings) {
-		for (int i = 0; i < strings.length - 2; i++)
-			if (!compare(strings[i], strings[i + 1]))
-				return false;
-		return true;
-	}
-
+	/**
+	 * Determines if s1 should be ordered before s2.
+	 * 
+	 * @param s1
+	 *            - the first string
+	 * @param s2
+	 *            - the second string
+	 * @return whether the strings are in the correct order
+	 */
 	private static boolean compare(String s1, String s2) {
-		int comparison;
-		for (int i = 0; i < Math.min(s1.length(), s2.length()); i++)
+		int comparison, minLength = Math.min(s1.length(), s2.length());
+		for (int i = 0; i < minLength; i++)
 			if ((comparison = ALPHABET.indexOf(s1.charAt(i)) - ALPHABET.indexOf(s2.charAt(i))) != 0)
-				return comparison <= 0;
+				return comparison < 0;
 		return s1.length() < s2.length();
-	}
-
-	public static void main(String[] args) {
-		System.out.println(Arrays.toString(wackySort(new String[] {"JUICE$", "W$#RDS", "EAGLES", "EAGERS", "W$$RDS"})));
 	}
 
 	/**
@@ -37,10 +35,15 @@ public class Question2 {
 	 * @return the sorted array of strings
 	 */
 	public static String[] wackySort(String[] unordered) {
-		while (!checkIfSorted(unordered))
+		boolean modified = true;
+		while (modified) {
+			modified = false;
 			for (int i = 0; i < unordered.length - 1; i++)
-				if (!compare(unordered[i], unordered[i + 1]))
+				if (!compare(unordered[i], unordered[i + 1])) {
+					modified = true;
 					Collections.swap(Arrays.asList(unordered), i, i + 1);
+				}
+		}
 		return unordered;
 	}
 }
