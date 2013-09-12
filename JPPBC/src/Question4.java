@@ -2,6 +2,13 @@
 public class Question4 {
 	public static double maxSpending(double[] amounts){
 		double max=0;
+		for(double amount:amounts){
+			double value=((int)(100.0/amount))*amount;
+			if(value>max)
+				max=value;
+		}
+		if(max==100.0)
+			return max;
 		try{
 			for(int i=0;i<amounts.length;i++){
 				double value=best(amounts,0,0);
