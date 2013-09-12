@@ -27,4 +27,8 @@ public class JPPBCTests {
 	public void testQuestion4_2(){
 		assertEquals(99.95,Question4.maxSpending(new double[]{4.77,81.42,18.53}),.001);
 	}
+	@Test
+	public void testQuestion4_3(){
+		assertEquals(100,Question4.maxSpending(new double[]{.07,.03,.13,19}),.001);
+	}
 }
