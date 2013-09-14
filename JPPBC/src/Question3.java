@@ -7,7 +7,7 @@ import java.util.Collections;
  * @author Jay Fleischer
  * @version 1.0 (9-9-13)
  */
-public class Question2 {
+public class Question3 {
 	private static final String ALPHABET = "VOFLTSUQXJGBCAHNMDEZRYKWIP#$";
 
 	/**
