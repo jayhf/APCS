@@ -1,6 +1,7 @@
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+
 import org.junit.Test;
 
 public class JPPBCTests {
@@ -15,7 +16,7 @@ public class JPPBCTests {
 	}
 
 	@Test
-	public void testQuestion2_1() {
+	public void testQuestion3_1() {
 		assertArrayEquals(new String[] {"JUICE$", "EAGLES", "EAGERS", "W$#RDS", "W$$RDS"},
 				Question3.wackySort(new String[] {"JUICE$", "W$#RDS", "EAGLES", "EAGERS", "W$$RDS"}));
 	}
@@ -33,5 +34,15 @@ public class JPPBCTests {
 	@Test
 	public void testQuestion4_3() {
 		assertEquals(100, Question4.maxSpending(new double[] {.07, .03, .13, 19}), .001);
+	}
+	@Test
+	public void testQuestion2_1() {
+		//System.out.println(Arrays.toString(Question2.fuzzNumbers(2000,1000)));
+		//assertArrayEquals(new int[]{1973,1013}, Question2.fuzzNumbers(2000, 1000));
+	}
+	@Test
+	public void testQuestion2_2() {
+		//System.out.println(Arrays.toString(Question2.fuzzNumbers(150,120)));
+		//assertArrayEquals(new int[]{127,127}, Question2.fuzzNumbers(150,120));
 	}
 }
