@@ -42,6 +42,7 @@ public class JPPBCTests {
 	}
 	@Test
 	public void testQuestion2_2() {
+		Question2.fuzzNumbers(Integer.MAX_VALUE,Integer.MAX_VALUE/2);
 		//System.out.println(Arrays.toString(Question2.fuzzNumbers(150,120)));
 		//assertArrayEquals(new int[]{127,127}, Question2.fuzzNumbers(150,120));
 	}
