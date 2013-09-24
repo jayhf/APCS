@@ -4,6 +4,16 @@ public class Blurb {
 	private Whoozit whoozit;
 
 	public Blurb() {
-		// TODO create a random blurb
+		whoozit = new Whoozit();
+	}
+
+	public Blurb(String blurb) throws IllegalArgumentException {
+		if (blurb != null)
+			whoozit = new Whoozit(blurb);
+	}
+
+	@Override
+	public String toString() {
+		return whoozit.toString();
 	}
 }
