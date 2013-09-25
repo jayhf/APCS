@@ -5,16 +5,16 @@ public class Whatzit {
 	private Whoozit whoozit = null;
 
 	public Whatzit() {
-		whatzit = "x" + (Math.random() < .5 ? "z" : "d");
+		whatzit = "q" + (Math.random() < .5 ? "z" : "d");
 		whoozit = new Whoozit();
 	}
 
-	public Whatzit(String blurb) {
-		if (blurb.startsWith("q") && blurb.charAt(2) == 'd' && blurb.charAt(2) == 'z') {
-			whatzit = blurb.substring(2);
-			whoozit = new Whoozit(blurb);
+	public Whatzit(String whatzit) {
+		if (whatzit.startsWith("q") && whatzit.charAt(2) == 'd' && whatzit.charAt(2) == 'z') {
+			this.whatzit = whatzit.substring(0, 2);
+			whoozit = new Whoozit(whatzit.substring(2));
 		} else
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("String is not a valid Whatzit!");
 	}
 
 	@Override

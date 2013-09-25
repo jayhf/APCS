@@ -8,8 +8,10 @@ public class Blurb {
 	}
 
 	public Blurb(String blurb) throws IllegalArgumentException {
-		if (blurb != null)
+		if (blurb != null && blurb.length() > 0)
 			whoozit = new Whoozit(blurb);
+		else
+			throw new IllegalArgumentException("Blurb may not be null and must have characters!");
 	}
 
 	@Override

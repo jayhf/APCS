@@ -2,25 +2,26 @@ package jay.apcs.blurbs;
 
 public class Whoozit {
 	private Whatzit whatzit = null;
-	private String whoozit;
+	private String whoozit = "x";
 
 	public Whoozit() {
-		whoozit = "x";
 		while (Math.random() * Math.random() < Math.random())
 			whoozit += "y";
 		if (Math.random() * Math.random() < Math.random())
 			whatzit = new Whatzit();
 	}
 
-	public Whoozit(String blurb) {
-		if (blurb.startsWith("x")) {
+	public Whoozit(String whoozit) {
+		if (whoozit.startsWith("x")) {
 			int index = 1;
-			while (index + 1 == blurb.indexOf('y', index))
+			while (index + 1 == whoozit.indexOf('y', index)) {
 				index++;
-			if (blurb.length() != index)
-				whatzit = new Whatzit(blurb.substring(index));
+				this.whoozit += "y";
+			}
+			if (whoozit.length() != index)
+				whatzit = new Whatzit(whoozit.substring(index));
 		} else
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("String is not a valid Whoozit!");
 	}
 
 	@Override
