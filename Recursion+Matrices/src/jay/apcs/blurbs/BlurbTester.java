@@ -25,5 +25,6 @@ public class BlurbTester {
 			else
 				System.out.println(isBlurb(input) ? "Blurb!" : "!Blurb!");
 		}
+		s.close();
 	}
 }

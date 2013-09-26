@@ -19,6 +19,6 @@ public class Whatzit {
 
 	@Override
 	public String toString() {
-		return whatzit + whoozit != null ? whoozit.toString() : "";
+		return whatzit + (whoozit != null ? whoozit.toString() : "");
 	}
 }
