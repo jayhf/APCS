@@ -7,6 +7,7 @@ public class BlurbTester {
 		try {
 			new Blurb(blurb);
 		} catch (IllegalArgumentException e) {
+			System.out.println(e.getMessage());
 			return false;
 		}
 		return true;
@@ -24,6 +25,7 @@ public class BlurbTester {
 				break;
 			else
 				System.out.println(isBlurb(input) ? "Blurb!" : "!Blurb!");
+			System.out.println("\nEnter a blurb to test it, nothing to get a random blurb or exit to exit.");
 		}
 		s.close();
 	}

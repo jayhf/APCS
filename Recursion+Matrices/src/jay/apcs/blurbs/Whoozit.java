@@ -21,11 +21,10 @@ public class Whoozit {
 
 	public Whoozit(String whoozit, boolean needsNext) {
 		if (whoozit.startsWith("x")) {
-			int index = 1;
-			while (index + 1 == whoozit.indexOf('y', index)) {
-				index++;
+			int index = 0;
+			while ('y' == whoozit.charAt(++index))
 				this.whoozit += "y";
-			}
+			System.out.println(this.whoozit);
 			if (whoozit.length() != index)
 				whatzit = new Whatzit(whoozit.substring(index));
 			else if (needsNext)

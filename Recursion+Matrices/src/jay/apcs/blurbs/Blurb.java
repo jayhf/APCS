@@ -9,7 +9,11 @@ public class Blurb {
 
 	public Blurb(String blurb) throws IllegalArgumentException {
 		if (blurb != null && blurb.length() > 0)
-			whoozit = new Whoozit(blurb, true);
+			try {
+				whoozit = new Whoozit(blurb, true);
+			} catch (Exception e) {
+				throw new IllegalArgumentException("Invalid Blurb!");
+			}
 		else
 			throw new IllegalArgumentException("Blurb may not be null and must have characters!");
 	}
