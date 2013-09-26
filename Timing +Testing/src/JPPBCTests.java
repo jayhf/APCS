@@ -31,29 +31,27 @@ public class JPPBCTests {
 
 	@Test
 	public void testQuestion3_1() {
-		assertArrayEquals(
-				new String[] { "JUICE$", "EAGLES", "EAGERS", "W$#RDS", "W$$RDS" },
-				Question3.wackySort(new String[] { "JUICE$", "W$#RDS",
-						"EAGLES", "EAGERS", "W$$RDS" }));
+		assertArrayEquals(new String[] { "JUICE$", "EAGLES", "EAGERS", "W$#RDS", "W$$RDS" },
+				Question3.wackySort(new String[] { "JUICE$", "W$#RDS", "EAGLES", "EAGERS", "W$$RDS" }));
 	}
+
+	/*
+	 * @Test public void testQuestion3_2() { assertArrayEquals(new String[] { "A####A", "A####A", "W$#RDS" },
+	 * Question3.wackySort(new String[] { "A####A", "W$#RDS", "A####A" })); }
+	 */
 
 	@Test
 	public void testQuestion4_1() {
-		assertEquals(100.0,
-				Question4.maxSpending(new double[] { 7.32, 43.19, 6, 12.5 }),
-				.001);
+		assertEquals(100.0, Question4.maxSpending(new double[] { 7.32, 43.19, 6, 12.5 }), .001);
 	}
 
 	@Test
 	public void testQuestion4_2() {
-		assertEquals(99.95,
-				Question4.maxSpending(new double[] { 4.77, 81.42, 18.53 }),
-				.001);
+		assertEquals(99.95, Question4.maxSpending(new double[] { 4.77, 81.42, 18.53 }), .001);
 	}
 
 	@Test
 	public void testQuestion4_3() {
-		assertEquals(100,
-				Question4.maxSpending(new double[] { .07, .03, .13, 19 }), .001);
+		assertEquals(100, Question4.maxSpending(new double[] { .07, .03, .13, 19 }), .001);
 	}
 }
