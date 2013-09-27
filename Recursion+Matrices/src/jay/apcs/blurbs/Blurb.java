@@ -12,7 +12,7 @@ public class Blurb {
 			try {
 				whoozit = new Whoozit(blurb, true);
 			} catch (Exception e) {
-				throw new IllegalArgumentException("Invalid Blurb!");
+				throw new IllegalArgumentException(e);
 			}
 		else
 			throw new IllegalArgumentException("Blurb may not be null and must have characters!");

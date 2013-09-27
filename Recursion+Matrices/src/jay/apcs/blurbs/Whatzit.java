@@ -12,7 +12,6 @@ public class Whatzit {
 	public Whatzit(String whatzit) {
 		if (whatzit.startsWith("q") && (whatzit.charAt(1) == 'd' || whatzit.charAt(1) == 'z')) {
 			this.whatzit = whatzit.substring(0, 2);
-			System.out.println(this.whatzit);
 			whoozit = new Whoozit(whatzit.substring(2));
 		} else
 			throw new IllegalArgumentException("String is not a valid Whatzit!");
