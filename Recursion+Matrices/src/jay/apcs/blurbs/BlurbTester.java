@@ -28,7 +28,8 @@ public class BlurbTester {
 	}
 
 	/**
-	 * The main method for the console program.
+	 * The main method for the console program. It lets the user enter an arbitrary string to test if it's a blurb, exit
+	 * the program or nothing to get a random valid blurb.
 	 * 
 	 * @param args
 	 *            - unused

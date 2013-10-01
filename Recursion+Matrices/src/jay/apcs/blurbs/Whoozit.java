@@ -6,15 +6,15 @@ package jay.apcs.blurbs;
  * 
  * @see Whatzit
  * @see Blurb
- * @author fleischerj
- * 
+ * @author Jay Fleischer
+ * @version 1.0 (9-27-13)
  */
 public class Whoozit {
 	private Whatzit whatzit = null;
 	private String whoozit = "x";
 
 	/**
-	 * Creates a random Whoozit, without a following Whatzit.Equivalent to new Whoozit(false).
+	 * Creates a random Whoozit, without a following Whatzit. Equivalent to new Whoozit(false).
 	 */
 	public Whoozit() {
 		this(false);
@@ -51,8 +51,11 @@ public class Whoozit {
 	 *            - the String used to create the Whoozit.
 	 * @param needsNext
 	 *            - whether or not there must be a following Whatzit.
+	 * @throws IllegalArgumentException
+	 *             if the passed String is not a valid Whoozit or if the passed String does not contain a following
+	 *             Whatzit and ther must be one.
 	 */
-	public Whoozit(String whoozit, boolean needsNext) {
+	public Whoozit(String whoozit, boolean needsNext) throws IllegalArgumentException {
 		if (whoozit.startsWith("x")) {
 			int index = 0;
 			while (whoozit.length() > ++index && 'y' == whoozit.charAt(index))
