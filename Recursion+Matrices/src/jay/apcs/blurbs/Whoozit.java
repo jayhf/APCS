@@ -53,7 +53,7 @@ public class Whoozit {
 	 *            - whether or not there must be a following Whatzit.
 	 * @throws IllegalArgumentException
 	 *             if the passed String is not a valid Whoozit or if the passed String does not contain a following
-	 *             Whatzit and ther must be one.
+	 *             Whatzit and there must be one.
 	 */
 	public Whoozit(String whoozit, boolean needsNext) throws IllegalArgumentException {
 		if (whoozit.startsWith("x")) {
