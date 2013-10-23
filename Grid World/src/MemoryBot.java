@@ -1,25 +1,29 @@
-import info.gridworld.grid.BoundedGrid;
-import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
-public class MemoryBot extends ActuallyRandomBot {
-	private Grid<Object> grid;
-	private Object obj = new Object();
+import java.util.HashSet;
+
+public class MemoryBot extends RandomBot {
+	HashSet<Location> deadEnds = new HashSet<Location>();
 
 	private int countNearby(Location location) {
 		int total = 0;
-		for (Location adjacent : getGrid().getEmptyAdjacentLocations(location))
-			if (grid.get(adjacent) == null)
+		for (Location adjacent : getGrid().getValidAdjacentLocations(location))
+			if (isValid(location))
 				total++;
+		System.out.println(total);
 		return total;
 	}
 
 	@Override
 	protected boolean isValid(Location location) {
-		if (grid == null)
-			grid = new BoundedGrid<Object>(getGrid().getNumRows(), getGrid().getNumCols());
-		if (countNearby(location) == 1)
-			grid.put(location, obj);
-		return super.isValid(location) && grid.get(location) == null;
+		return super.isValid(location) && !deadEnds.contains(location);
+	}
+
+	@Override
+	public void move() {
+		System.out.println(deadEnds);
+		if (countNearby(getLocation()) == 1)
+			deadEnds.add(getLocation());
+		super.move();
 	}
 }

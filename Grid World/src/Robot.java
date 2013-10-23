@@ -17,12 +17,9 @@ public abstract class Robot extends Bug {
 
 	public boolean canMove(Location location) {
 		Grid<Actor> gr = getGrid();
-		if (gr == null)
+		if (gr == null || !gr.isValid(location))
 			return false;
-		Location next = location;
-		if (!gr.isValid(next))
-			return false;
-		Actor neighbor = gr.get(next);
+		Actor neighbor = gr.get(location);
 		return neighbor == null || neighbor instanceof Flower || neighbor instanceof Treasure;
 	}
 
@@ -32,5 +29,12 @@ public abstract class Robot extends Bug {
 
 	protected boolean hasFoundTreasure() {
 		return foundTreasure;
+	}
+
+	@Override
+	public void move() {
+		if (getGrid().get(getLocation().getAdjacentLocation(getDirection())) instanceof Treasure)
+			foundTreasure();
+		super.move();
 	}
 }

@@ -11,9 +11,7 @@ public class TeleportBot extends Robot {
 			for (Location l : grid.getOccupiedLocations())
 				if (grid.get(l) instanceof Treasure)
 					location = l;
-			removeSelfFromGrid();
-			grid.get(location).removeSelfFromGrid();
-			putSelfInGrid(grid, location);
+			super.moveTo(location);
 			foundTreasure();
 		} else
 			turn();
