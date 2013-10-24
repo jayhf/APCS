@@ -2,16 +2,31 @@ import info.gridworld.actor.Actor;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
 public class PathFindingBot extends Robot {
+	private boolean impossible = false;
+
 	@Override
 	public void act() {
-		if (!hasFoundTreasure()) {
-			int[] result = pathFind(new HashSet<Location>(), getLocation(), getGrid());
-			int direction = getLocation().getDirectionToward(new Location(result[1], result[2]));
+		if (!hasFoundTreasure() && !impossible) {
+			int shortest = Integer.MAX_VALUE;
+			Location best = null;
+			for (Location location : getValidOptions(getGrid().getValidAdjacentLocations(getLocation()))) {
+				int result = pathFind(new HashSet<Location>(Arrays.asList(getLocation())), getLocation(), getGrid());
+				if (shortest > result) {
+					shortest = result;
+					best = location;
+				}
+			}
+			if (best == null) {
+				impossible = true;
+				return;
+			}
+			int direction = getLocation().getDirectionToward(best);
 			if (getDirection() == direction)
 				move();
 			else
@@ -28,24 +43,24 @@ public class PathFindingBot extends Robot {
 	}
 
 	protected boolean isValid(Location location) {
-		return location.getDirectionToward(getLocation()) % 90 == 0;
+		return location.getDirectionToward(getLocation()) % 90 == 0 && getGrid().get(location) != null;
 	}
 
 	@SuppressWarnings("unchecked")
-	private int[] pathFind(HashSet<Location> previousLocations, Location current, Grid<Actor> grid) {
-		int shortest = Integer.MAX_VALUE, xnext = -1, ynext = -1;
-		for (Location location : getValidOptions(getGrid().getEmptyAdjacentLocations(current)))
+	private int pathFind(HashSet<Location> previousLocations, Location current, Grid<Actor> grid) {
+		int shortest = Integer.MAX_VALUE;
+		for (Location location : getValidOptions(getGrid().getValidAdjacentLocations(current)))
 			if (!previousLocations.contains(location)) {
-				if (grid.get(location) instanceof Treasure)
-					return new int[] { 0, location.getCol(), location.getRow() };
-				HashSet<Location> copy = (HashSet<Location>) previousLocations.clone();
-				int[] result = pathFind(copy, location, grid);
-				if (result[0] < shortest) {
-					shortest = result[0];
-					xnext = result[1];
-					ynext = result[2];
+				if (grid.get(location) instanceof Treasure) {
+					System.out.println("HI");
+					return 0;
 				}
+				HashSet<Location> copy = (HashSet<Location>) previousLocations.clone();
+				copy.add(location);
+				int result = pathFind(copy, location, grid);
+				if (result < shortest)
+					shortest = result;
 			}
-		return new int[] { shortest, xnext, ynext };
+		return shortest == Integer.MAX_VALUE ? shortest : shortest + 1;
 	}
 }

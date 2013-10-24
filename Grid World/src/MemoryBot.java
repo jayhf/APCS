@@ -2,13 +2,13 @@ import info.gridworld.grid.Location;
 
 import java.util.HashSet;
 
-public class MemoryBot extends RandomBot {
+public class MemoryBot extends ActuallyRandomBot {
 	HashSet<Location> deadEnds = new HashSet<Location>();
 
 	private int countNearby(Location location) {
 		int total = 0;
 		for (Location adjacent : getGrid().getValidAdjacentLocations(location))
-			if (isValid(location))
+			if (isValid(adjacent))
 				total++;
 		System.out.println(total);
 		return total;
