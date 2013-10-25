@@ -1,5 +1,6 @@
 import info.gridworld.grid.Location;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,7 +14,8 @@ public class PathFindingBot extends Robot {
 	public void act() {
 		if (!hasFoundTreasure() && !impossible) {
 			if (path == null) {
-				path = pathFind(new HashMap<Location, Integer>(), getLocation(), 0);
+				path = pathFind(new HashMap<Location, Integer>(),
+						new LinkedList<Location>(Arrays.asList(getLocation())), 0);
 				if (path == null) {
 					impossible = true;
 					return;
@@ -25,7 +27,7 @@ public class PathFindingBot extends Robot {
 				move();
 				path.pop();
 			} else
-				turn();
+				setDirection(direction);
 		}
 	}
 
@@ -40,25 +42,32 @@ public class PathFindingBot extends Robot {
 		return locations;
 	}
 
-	protected LinkedList<Location> pathFind(HashMap<Location, Integer> minCosts, Location current, int currentCost) {
-		LinkedList<Location> best = null;
-		for (Location location : getValidAdjacentOptions(current)) {
-			if (getGrid().get(location) instanceof Treasure) {
-				LinkedList<Location> result = new LinkedList<Location>();
-				result.push(location);
-				result.push(current);
-				return result;
+	protected LinkedList<Location> pathFind(HashMap<Location, Integer> minCosts, LinkedList<Location> checkNext,
+			int currentCost) {
+		LinkedList<Location> nextList = new LinkedList<Location>();
+		for (Location location : checkNext)
+			for (Location adjacent : getValidAdjacentOptions(location)) {
+				Integer cost = minCosts.get(adjacent);
+				if (cost == null || cost > currentCost) {
+					minCosts.put(adjacent, currentCost);
+					nextList.push(adjacent);
+					if (getGrid().get(adjacent) instanceof Treasure) {
+						LinkedList<Location> path = new LinkedList<Location>();
+						path.add(adjacent);
+						return path;
+					}
+				}
 			}
-			if (!minCosts.containsKey(location))
-				minCosts.put(location, currentCost + 1);
-			if (currentCost < minCosts.get(location)) {
-				LinkedList<Location> result = pathFind(minCosts, location, currentCost + 1);
-				if (result != null && result.size() < (best == null ? Integer.MAX_VALUE : best.size()))
-					best = result;
+		if (nextList.isEmpty())
+			return null;
+		LinkedList<Location> path = pathFind(minCosts, nextList, currentCost + 1);
+		if (path == null)
+			return null;
+		for (Location l : getValidAdjacentOptions(path.peek()))
+			if (minCosts.get(l) == currentCost) {
+				path.push(l);
+				break;
 			}
-		}
-		if (best != null)
-			best.push(current);
-		return best;
+		return path;
 	}
 }
