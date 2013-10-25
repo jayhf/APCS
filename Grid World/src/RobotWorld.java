@@ -26,6 +26,7 @@ public class RobotWorld extends ActorWorld {
 					y++;
 				}
 			}
+			s.close();
 			return new RobotWorld(grid);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
