@@ -1,4 +1,9 @@
-import info.gridworld.actor.Rock;
+import info.gridworld.actor.Flower;
 
-public class Treasure extends Rock {
-}
+/**
+ * This actor represents Treasure for the robots to find.
+ * 
+ * @author Jay Fleischer
+ * @version 1.0 (10-27-13)
+ */
+public class Treasure extends Flower {}

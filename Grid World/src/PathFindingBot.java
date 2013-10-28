@@ -6,6 +6,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A robot that recursively finds the best path to the treasure and stores it. It then follows the path. It has a
+ * strange bug where on the first turn it moves diagonally.
+ * 
+ * @see Robot
+ * @author Jay Fleischer
+ * @version 1.0 (10-27-13)
+ */
 public class PathFindingBot extends Robot {
 	private boolean impossible = false;
 	private LinkedList<Location> path = null;
@@ -24,8 +32,10 @@ public class PathFindingBot extends Robot {
 			}
 			int direction = getLocation().getDirectionToward(path.peek());
 			if (getDirection() == direction) {
-				move();
-				path.pop();
+				if (canMove()) {
+					move();
+					path.pop();
+				}
 			} else
 				setDirection(direction);
 		}
@@ -36,7 +46,7 @@ public class PathFindingBot extends Robot {
 		Iterator<Location> itr = locations.iterator();
 		while (itr.hasNext()) {
 			Location next = itr.next();
-			if (!canMove(next) || location.getDirectionToward(next) % 90 != 0)
+			if (!canEverMove(next) || location.getDirectionToward(next) % 90 != 0)
 				itr.remove();
 		}
 		return locations;

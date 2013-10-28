@@ -2,6 +2,13 @@ import info.gridworld.actor.Actor;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
+/**
+ * TeleportBot is a robot that automagically teleports to the treasure.
+ * 
+ * @see Robot
+ * @author Jay Fleischer
+ * @version 1.0 (10-27-13)
+ */
 public class TeleportBot extends Robot {
 	@Override
 	public void act() {
