@@ -1,6 +1,7 @@
 *.class
 *.jar
 *.prefs
+*.zip
 
 .metadata/*
 .classpath
