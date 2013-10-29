@@ -14,11 +14,7 @@ public class MemoryBot extends ActuallyRandomBot {
 	HashSet<Location> deadEnds = new HashSet<Location>();
 
 	private int countNearby(Location location) {
-		int total = 0;
-		for (Location adjacent : getGrid().getValidAdjacentLocations(location))
-			if (isValid(adjacent))
-				total++;
-		return total;
+		return getValidAdjacentOptions(getLocation()).size();
 	}
 
 	@Override

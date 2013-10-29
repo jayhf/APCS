@@ -1,5 +1,5 @@
 /**
- * RightHandBot is a robot that tries to keep its right hand on the wall.
+ * RightHandBot is a robot that tries to keep its right hand on the wall. It follows the specification.
  * 
  * @see Robot
  * @author Jay Fleischer
