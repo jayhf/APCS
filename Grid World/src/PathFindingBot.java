@@ -17,6 +17,7 @@ import java.util.List;
 public class PathFindingBot extends Robot {
 	private boolean impossible = false;
 	private LinkedList<Location> path = null;
+	private Location treasure = null;
 
 	@Override
 	public void act() {
@@ -36,11 +37,17 @@ public class PathFindingBot extends Robot {
 					move();
 					path.pop();
 				}
+				else if (treasure != null && !(getGrid().get(treasure) instanceof Treasure)) {
+					treasure = null;
+					path = pathFind(new HashMap<Location, Integer>(),
+							new LinkedList<Location>(Arrays.asList(getLocation())), 0);
+				}
 			} else
 				setDirection(direction);
 		}
 	}
 
+	@Override
 	protected List<Location> getValidAdjacentOptions(Location location) {
 		List<Location> locations = getGrid().getValidAdjacentLocations(location);
 		Iterator<Location> itr = locations.iterator();
@@ -64,6 +71,7 @@ public class PathFindingBot extends Robot {
 					if (getGrid().get(adjacent) instanceof Treasure) {
 						LinkedList<Location> path = new LinkedList<Location>();
 						path.add(adjacent);
+						treasure = adjacent;
 						return path;
 					}
 				}

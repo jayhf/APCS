@@ -18,8 +18,9 @@ public class BetterRightHandBot extends Robot {
 			return;
 		}
 		int right = Direction.right(getDirection()), left = Direction.left(getDirection());
-		boolean blocked = !canMove(), rightBlocked = !canMove(getLocation().getAdjacentLocation(right)), leftBlocked = !canMove(getLocation()
-				.getAdjacentLocation(left));
+		boolean blocked = !canMove();
+		boolean rightBlocked = !canMove(getLocation().getAdjacentLocation(right));
+		boolean leftBlocked = !canMove(getLocation().getAdjacentLocation(left));
 		if (!rightBlocked
 				&& !canMove(getLocation().getAdjacentLocation(right).getAdjacentLocation((getDirection() + 180) % 360))) {
 			setDirection(right);

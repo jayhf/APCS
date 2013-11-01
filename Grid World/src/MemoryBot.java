@@ -13,13 +13,13 @@ import java.util.HashSet;
 public class MemoryBot extends ActuallyRandomBot {
 	HashSet<Location> deadEnds = new HashSet<Location>();
 
-	private int countNearby(Location location) {
-		return getValidAdjacentOptions(getLocation()).size();
+	@Override
+	public boolean canMove(Location location) {
+		return super.canMove(location) && !deadEnds.contains(location);
 	}
 
-	@Override
-	protected boolean isValid(Location location) {
-		return super.isValid(location) && !deadEnds.contains(location);
+	private int countNearby(Location location) {
+		return getValidAdjacentOptions(getLocation()).size();
 	}
 
 	@Override

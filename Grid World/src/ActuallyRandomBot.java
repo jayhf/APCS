@@ -1,6 +1,5 @@
 import info.gridworld.grid.Location;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ public class ActuallyRandomBot extends Robot {
 		turnAct = !turnAct;
 		if (!hasFoundTreasure())
 			if (turnAct) {
-				List<Location> options = getValidOptions(getGrid().getValidAdjacentLocations(getLocation()));
+				List<Location> options = getValidAdjacentOptions();
 				if (options.size() == 0)
 					turnAct = !turnAct;
 				else
@@ -31,15 +30,8 @@ public class ActuallyRandomBot extends Robot {
 				turnAct = !turnAct;
 	}
 
-	protected List<Location> getValidOptions(List<Location> locations) {
-		Iterator<Location> itr = locations.iterator();
-		while (itr.hasNext())
-			if (!isValid(itr.next()))
-				itr.remove();
-		return locations;
-	}
-
-	protected boolean isValid(Location location) {
-		return location.getDirectionToward(getLocation()) % 90 == 0 && canEverMove(location);
+	@Override
+	public boolean canMove(Location location) {
+		return location.getDirectionToward(getLocation()) % 90 == 0 && super.canMove(location);
 	}
 }

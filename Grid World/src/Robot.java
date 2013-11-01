@@ -4,6 +4,8 @@ import info.gridworld.actor.Flower;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,8 +34,25 @@ public abstract class Robot extends Bug {
 		return neighbor == null || neighbor instanceof Flower;
 	}
 
+	public boolean canMove(Location location, Location previous) {
+		return canMove(location);
+	}
+
 	protected void foundTreasure() {
 		foundTreasure = true;
+	}
+
+	public List<Location> getValidAdjacentOptions() {
+		return getValidAdjacentOptions(getLocation());
+	}
+
+	public List<Location> getValidAdjacentOptions(Location location) {
+		List<Location> locations = getGrid().getValidAdjacentLocations(location);
+		Iterator<Location> locationItr = locations.iterator();
+		while (locationItr.hasNext())
+			if (!canMove(locationItr.next()))
+				locationItr.remove();
+		return locations;
 	}
 
 	protected boolean hasFoundTreasure() {
