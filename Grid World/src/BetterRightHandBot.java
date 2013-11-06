@@ -1,13 +1,17 @@
 /**
- * BetterRightHandBot is a robot that tries to keep its right hand on the wall, and works better than RightHandBot.
+ * BetterRightHandBot is a robot that tries to keep its right hand on the wall, and works better than RightHandBot, by
+ * turning when there is an open spot on its right and a wall behind it.
  * 
  * @see Robot
  * @author Jay Fleischer
- * @version 1.0 (10-27-13)
+ * @version 1.0 (11-5-13)
  */
 public class BetterRightHandBot extends Robot {
 	private boolean moveNext = false;
 
+	/**
+	 * Moves one step, keeping its right hand on a wall.
+	 */
 	@Override
 	public void act() {
 		if (hasFoundTreasure())

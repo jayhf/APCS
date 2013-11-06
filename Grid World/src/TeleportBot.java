@@ -7,9 +7,12 @@ import info.gridworld.grid.Location;
  * 
  * @see Robot
  * @author Jay Fleischer
- * @version 1.0 (10-27-13)
+ * @version 1.0 (11-5-13)
  */
 public class TeleportBot extends Robot {
+	/**
+	 * Searches for the treasure and uses an infinite improbability drive to teleport to it. It then spins in circles!
+	 */
 	@Override
 	public void act() {
 		if (!hasFoundTreasure()) {

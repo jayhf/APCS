@@ -1,6 +1,7 @@
 import info.gridworld.grid.Location;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * ActuallyRandomBot is a robot that moves completely randomly. It alternates between turning towards a random location
@@ -8,11 +9,16 @@ import java.util.List;
  * 
  * @see Robot
  * @author Jay Fleischer
- * @version 1.0 (10-27-13)
+ * @version 2.0 (11-5-13)
  */
 public class ActuallyRandomBot extends Robot {
+	private Random random = new Random();
 	protected boolean turnAct = false;
 
+	/**
+	 * Moves completely randomly, alternating between turning to an open location and moving in the direction it is
+	 * facing.
+	 */
 	@Override
 	public void act() {
 		turnAct = !turnAct;
@@ -28,10 +34,5 @@ public class ActuallyRandomBot extends Robot {
 				move();
 			else
 				turnAct = !turnAct;
-	}
-
-	@Override
-	public boolean canMove(Location location) {
-		return location.getDirectionToward(getLocation()) % 90 == 0 && super.canMove(location);
 	}
 }

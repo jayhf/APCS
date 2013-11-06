@@ -2,10 +2,15 @@
  * RightHandBot is a robot that tries to keep its right hand on the wall. It follows the specification.
  * 
  * @see Robot
+ * @see BetterRightHandBot.
  * @author Jay Fleischer
- * @version 1.0 (10-27-13)
+ * @version 1.0 (11-5-13)
  */
 public class RightHandBot extends Robot {
+	/**
+	 * Tries to keep its right hand on a wall but not very well.
+	 * 
+	 */
 	@Override
 	public void act() {
 		int right = Direction.right(getDirection());

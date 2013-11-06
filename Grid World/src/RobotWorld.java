@@ -12,12 +12,25 @@ import java.util.Scanner;
 /**
  * RobotWorld is a utility class that helps load mazes with robots and treasure.
  * 
+ * Multiple robots interact by either pretending other robots are walls or waiting until the other robot has moved. A
+ * Robot will not be greedy and try to find more than one Treasure.
+ * 
+ * 
  * @see Robot
  * @see Treasure
  * @author Jay Fleischer
- * @version 1.0 (10-27-13)
+ * @version 1.0 (11-5-13)
  */
 public class RobotWorld extends ActorWorld {
+	/**
+	 * Loads the maze with the given name and places a Robot
+	 * 
+	 * @param name
+	 *            - the name of the maze
+	 * @param finder
+	 *            - the Robot
+	 * @return - the created RobotWorld
+	 */
 	public static RobotWorld buildMaze(String name, Robot finder) {
 		try {
 			Scanner s = new Scanner(new File("mazes/" + name + ".txt"));
@@ -44,7 +57,19 @@ public class RobotWorld extends ActorWorld {
 	}
 
 	/**
-	 * Multiple robots interact by either pretending other robots are walls or waiting until the other robot has moved.
+	 * Loads the maze with the given name and adds extra robots and treasures.
+	 * 
+	 * @param name
+	 *            - The name of the maze to load.
+	 * @param finder
+	 *            - The Robot to go on the Robot Location indicated by the maze file
+	 * @param moreBots
+	 *            - The extra Robots
+	 * @param botLocations
+	 *            - The extra Locations, in the same order as their corresponding Robots
+	 * @param moreTreasure
+	 *            - The extra Treasure Locations
+	 * @return the created RobotWorld
 	 */
 	public static RobotWorld buildMaze(String name, Robot finder, List<Robot> moreBots, List<Location> botLocations,
 			List<Location> moreTreasure) {

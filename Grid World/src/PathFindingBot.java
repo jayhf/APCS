@@ -2,42 +2,39 @@ import info.gridworld.grid.Location;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
- * A robot that recursively finds the best path to the treasure and stores it. It then follows the path. It has a
- * strange bug where on the first turn it moves diagonally.
+ * A robot that recursively finds the best path to the treasure and stores it. It then follows the path.
  * 
  * @see Robot
  * @author Jay Fleischer
- * @version 1.0 (10-27-13)
+ * @version 2.0 (11-5-13)
  */
 public class PathFindingBot extends Robot {
 	private boolean impossible = false;
 	private LinkedList<Location> path = null;
 	private Location treasure = null;
 
+	/**
+	 * Moves one step or turns, going along the shortest path to the nearest treasure.
+	 */
 	@Override
 	public void act() {
 		if (!hasFoundTreasure() && !impossible) {
 			if (path == null) {
-				path = pathFind(new HashMap<Location, Integer>(),
-						new LinkedList<Location>(Arrays.asList(getLocation())), 0);
+				path = generatePath();
 				if (path == null) {
 					impossible = true;
 					return;
-				} else
-					path.pop();
+				}
 			}
 			int direction = getLocation().getDirectionToward(path.peek());
 			if (getDirection() == direction) {
 				if (canMove()) {
 					move();
 					path.pop();
-				}
-				else if (treasure != null && !(getGrid().get(treasure) instanceof Treasure)) {
+				} else if (treasure != null && !(getGrid().get(treasure) instanceof Treasure)) {
 					treasure = null;
 					path = pathFind(new HashMap<Location, Integer>(),
 							new LinkedList<Location>(Arrays.asList(getLocation())), 0);
@@ -47,35 +44,29 @@ public class PathFindingBot extends Robot {
 		}
 	}
 
-	@Override
-	protected List<Location> getValidAdjacentOptions(Location location) {
-		List<Location> locations = getGrid().getValidAdjacentLocations(location);
-		Iterator<Location> itr = locations.iterator();
-		while (itr.hasNext()) {
-			Location next = itr.next();
-			if (!canEverMove(next) || location.getDirectionToward(next) % 90 != 0)
-				itr.remove();
-		}
-		return locations;
+	/**
+	 * Generates a path to the nearest treasure.
+	 * 
+	 * @return the path, stored in a LinkedList of locations.
+	 */
+	protected LinkedList<Location> generatePath() {
+		return pathFind(new HashMap<Location, Integer>(), new LinkedList<Location>(Arrays.asList(getLocation())), 0);
 	}
 
-	protected LinkedList<Location> pathFind(HashMap<Location, Integer> minCosts, LinkedList<Location> checkNext,
+	private LinkedList<Location> pathFind(HashMap<Location, Integer> minCosts, LinkedList<Location> checkNext,
 			int currentCost) {
 		LinkedList<Location> nextList = new LinkedList<Location>();
 		for (Location location : checkNext)
-			for (Location adjacent : getValidAdjacentOptions(location)) {
-				Integer cost = minCosts.get(adjacent);
-				if (cost == null || cost > currentCost) {
+			for (Location adjacent : getValidAdjacentOptions(location, true))
+				if (!minCosts.containsKey(adjacent)) {
 					minCosts.put(adjacent, currentCost);
 					nextList.push(adjacent);
 					if (getGrid().get(adjacent) instanceof Treasure) {
 						LinkedList<Location> path = new LinkedList<Location>();
-						path.add(adjacent);
-						treasure = adjacent;
+						path.add(treasure = adjacent);
 						return path;
 					}
 				}
-			}
 		if (nextList.isEmpty())
 			return null;
 		LinkedList<Location> path = pathFind(minCosts, nextList, currentCost + 1);
