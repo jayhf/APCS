@@ -16,7 +16,8 @@ public class AntHill extends Actor implements Processable {
 
 	@Override
 	public void process(WorkerAnt ant) {
-		// TODO ant give food to hill hill give location to ant
+		ant.shareAntHillLocation(getLocation());
+		foodReturned+=ant.takeFood();
 	}
 
 	@Override
