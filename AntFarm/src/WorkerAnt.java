@@ -51,4 +51,14 @@ public class WorkerAnt extends Critter implements Processable {
 				+ hillLocation
 				+ ", toString()=" + super.toString() + "]";
 	}
+	@Override
+	public ArrayList<Location> getActors(){
+		return getGrid().getOccupiedAdjacentLocations(getLocation());
+	}
+	@Override
+	public void processActors(ArrayList<Location> actors){
+		for(Actor actor:actors)
+			if(actor instanceof WorkerAnt)
+				process((WorkerAnt)actor);
+	}
 }
