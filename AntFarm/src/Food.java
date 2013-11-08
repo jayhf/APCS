@@ -14,7 +14,8 @@ public abstract class Food extends Actor implements Processable {
 
 	@Override
 	public void process(WorkerAnt ant) {
-		// TODO make ant take a bite and share the location
+		ant.shareFoodLocation(getLocation());
+		ant.takeFood(bitSize);
 	}
 
 	@Override
