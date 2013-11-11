@@ -4,6 +4,7 @@ import info.gridworld.grid.Location;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class WorkerAnt extends Critter implements Processable {
 	private int foodCarried;
@@ -25,7 +26,31 @@ public class WorkerAnt extends Critter implements Processable {
 	
 	@Override
 	public ArrayList<Location> getMoveLocations() {
-		return null;
+		int direction = getDirection();
+		if (foodCarried > 0 && hillLocation != null)
+			direction = getLocation().getDirectionToward(hillLocation);
+		else if (foodCarried == 0 && foodLocation != null)
+			direction = getLocation().getDirectionToward(foodLocation);
+		
+		ArrayList<Location> list = new ArrayList<Location>();
+		Location towardsGoal = getLocation().getAdjacentLocation(direction);
+		list.add(towardsGoal);
+		if (getGrid().isValid(towardsGoal) && getGrid().get(towardsGoal) == null)
+			return list;
+		list.add(getLocation().getAdjacentLocation(direction + Location.HALF_RIGHT));
+		list.add(getLocation().getAdjacentLocation(direction + Location.HALF_LEFT));
+		for (Iterator<Location> itr = list.iterator(); itr.hasNext();) {
+			Location location = itr.next();
+			if (!getGrid().isValid(itr.next()) || getGrid().get(location) != null)
+				itr.remove();
+		}
+		return list;
+	}
+	
+	@Override
+	public void makeMove(Location l) {
+		setDirection(getLocation().getDirectionToward(l));
+		moveTo(l);
 	}
 	
 	@Override
@@ -34,8 +59,20 @@ public class WorkerAnt extends Critter implements Processable {
 		ant.shareFoodLocation(foodLocation);
 	}
 	
+	@Override
+	public void processActors(ArrayList<Actor> actors) {
+		for (Actor actor : actors)
+			if (actor instanceof WorkerAnt)
+				process((WorkerAnt) actor);
+	}
+	
 	public Location selectLocation(ArrayList<Location> locations) {
-		
+		return null;
+	}
+	
+	@Override
+	public Location selectMoveLocation(ArrayList<Location> locations) {
+		return locations.get((int) (Math.random() * locations.size()));
 	}
 	
 	public void shareAntHillLocation(Location hillLocation) {
@@ -49,10 +86,12 @@ public class WorkerAnt extends Critter implements Processable {
 	}
 	
 	public int takeFood() {
+		setColor(Color.BLACK);
 		return foodCarried + (foodCarried = 0);
 	}
 	
 	public void takeFood(int food) {
+		setColor(Color.RED);
 		foodCarried += food;
 	}
 	
@@ -60,15 +99,5 @@ public class WorkerAnt extends Critter implements Processable {
 	public String toString() {
 		return "WorkerAnt [foodLocation=" + foodLocation + ", foodCarried=" + foodCarried + ", hillLocation="
 				+ hillLocation + ", toString()=" + super.toString() + "]";
-	}
-	@Override
-	public ArrayList<Location> getActors(){
-		return getGrid().getOccupiedAdjacentLocations(getLocation());
-	}
-	@Override
-	public void processActors(ArrayList<Location> actors){
-		for(Actor actor:actors)
-			if(actor instanceof WorkerAnt)
-				process((WorkerAnt)actor);
 	}
 }
