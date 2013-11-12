@@ -5,8 +5,10 @@ import info.gridworld.grid.Location;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class WorkerAnt extends Critter implements Processable {
+	private static Random random = new Random();
 	private int foodCarried;
 	private Location foodLocation;
 	private Location hillLocation;
@@ -14,7 +16,7 @@ public class WorkerAnt extends Critter implements Processable {
 	public WorkerAnt() {
 		setColor(Color.BLACK);
 		foodCarried = 0;
-		setDirection((int) (Math.random() * 8) * 45);
+		setDirection(random.nextInt(8) * 45);
 		foodLocation = null;
 		hillLocation = null;
 	}
@@ -41,7 +43,7 @@ public class WorkerAnt extends Critter implements Processable {
 		list.add(getLocation().getAdjacentLocation(direction + Location.HALF_LEFT));
 		for (Iterator<Location> itr = list.iterator(); itr.hasNext();) {
 			Location location = itr.next();
-			if (!getGrid().isValid(itr.next()) || getGrid().get(location) != null)
+			if (!getGrid().isValid(location) || getGrid().get(location) != null)
 				itr.remove();
 		}
 		return list;
@@ -49,6 +51,10 @@ public class WorkerAnt extends Critter implements Processable {
 	
 	@Override
 	public void makeMove(Location l) {
+		if (l == null) {
+			setDirection(getDirection() + (random.nextBoolean() ? 45 : -45));
+			return;
+		}
 		setDirection(getLocation().getDirectionToward(l));
 		moveTo(l);
 	}
@@ -64,15 +70,13 @@ public class WorkerAnt extends Critter implements Processable {
 		for (Actor actor : actors)
 			if (actor instanceof WorkerAnt)
 				process((WorkerAnt) actor);
-	}
-	
-	public Location selectLocation(ArrayList<Location> locations) {
-		return null;
+			else if (actor instanceof Processable)
+				((Processable) actor).process(this);
 	}
 	
 	@Override
 	public Location selectMoveLocation(ArrayList<Location> locations) {
-		return locations.get((int) (Math.random() * locations.size()));
+		return locations.isEmpty() ? null : locations.get(random.nextInt(locations.size()));
 	}
 	
 	public void shareAntHillLocation(Location hillLocation) {
