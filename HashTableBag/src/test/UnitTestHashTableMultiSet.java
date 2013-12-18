@@ -103,10 +103,11 @@ public class UnitTestHashTableMultiSet extends junit.framework.TestCase {
 	protected void tearDown() {
 		String result = testSet.toString();
 		if (compare.equals(result))
-			System.out.print("Success ");
-		else
+			;// System.out.print("Success ");
+		else {
 			System.out.print("Failed ");
-		System.out.println("comparing " + compare + " to " + result);
+			System.out.println("comparing " + compare + " to " + result);
+		}
 		assertEquals(true, compare.equals(result));
 	}
 	
@@ -468,7 +469,6 @@ public class UnitTestHashTableMultiSet extends junit.framework.TestCase {
 		testSet.add(new Integer(16)); // goes to bucket 8
 		testSet.add(new Integer(17)); // goes to 9
 		assertEquals(12, testSet.size());
-		
 		System.out.println(testSet);
 		
 		assertEquals(true, testSet.remove(16));
@@ -481,6 +481,7 @@ public class UnitTestHashTableMultiSet extends junit.framework.TestCase {
 		assertEquals(5, testSet.size());
 		assertEquals(2, testSet.remove(4, 2));
 		assertEquals(3, testSet.size());
+		// System.out.println(testSet.count(17));
 		assertEquals(2, testSet.remove(17, 2));
 		assertEquals(1, testSet.size());
 		assertEquals(true, testSet.remove(16));

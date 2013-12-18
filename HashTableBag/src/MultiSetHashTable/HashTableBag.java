@@ -55,7 +55,7 @@ public class HashTableBag<T> implements Bag<T> {
 	
 	@Override
 	public boolean contains(T t) {
-		return count(t) == 0;
+		return count(t) > 0;
 	}
 	
 	@Override
@@ -146,14 +146,14 @@ public class HashTableBag<T> implements Bag<T> {
 			return 0;
 		} else {
 			int result = counters[index].number;
-			if (-occurences >= result) {
-				occurences = -result;
+			if (occurences <= -counters[index].number) {
+				occurences = -counters[index].number;
 				counterSize--;
 			}
 			if (occurences > 0 && counters[index].number > Integer.MAX_VALUE - occurences)
 				throw new IllegalArgumentException();
 			counters[index].number += occurences;
-			size += Math.max(-counters[index].number, occurences);
+			size += occurences;
 			if (counters[index].number <= 0) {
 				int previousIndex = index;
 				while (counters[index] != null) {
@@ -172,7 +172,7 @@ public class HashTableBag<T> implements Bag<T> {
 	
 	@Override
 	public boolean remove(T t) {
-		return modify(t, -Integer.MIN_VALUE) > 0;
+		return modify(t, -1) > 0;
 	}
 	
 	@Override
@@ -184,8 +184,10 @@ public class HashTableBag<T> implements Bag<T> {
 	
 	@Override
 	public int setCount(T t, int count) {
-		if (count <= 0)
+		if (count == 0)
 			return modify(t, -Integer.MIN_VALUE);
+		else if (count < 0)
+			throw new IllegalArgumentException();
 		int index = t.hashCode() % counters.length;
 		while (counters[index] != null && !counters[index].t.equals(t))
 			if (++index == counters.length)
