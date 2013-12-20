@@ -1,6 +1,8 @@
 package test;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -432,6 +434,58 @@ public class UnitTestHashTableMultiSet extends junit.framework.TestCase {
 		
 	}
 	
+	@Test
+	public void testIterator() {
+		boolean success = false;
+		
+		assertEquals(0, testSet.add(0));
+		assertEquals(0, testSet.add(2));
+		assertEquals(0, testSet.add(1));
+		assertEquals(0, testSet.add(4));
+		assertEquals(0, testSet.add(3));
+		assertEquals(1, testSet.add(1));
+		
+		Iterator<Integer> it = testSet.iterator();
+		
+		assertEquals(true, it.hasNext());
+		assertEquals(0, it.next().intValue());
+		assertEquals(true, it.hasNext());
+		assertEquals(1, it.next().intValue());
+		assertEquals(true, it.hasNext());
+		assertEquals(1, it.next().intValue());
+		assertEquals(true, it.hasNext());
+		assertEquals(2, it.next().intValue());
+		assertEquals(true, it.hasNext());
+		
+		it.remove();
+		assertEquals(true, it.hasNext());
+		try {
+			it.remove();
+		} catch (IllegalStateException e) {
+			success = true;
+		}
+		assertEquals(true, success);
+		
+		assertEquals(3, it.next().intValue());
+		assertEquals(true, it.hasNext());
+		assertEquals(4, it.next().intValue());
+		success = false;
+		try {
+			it.next();
+		} catch (NoSuchElementException e) {
+			success = true;
+		}
+		assertEquals(true, success);
+		int sum = 0;
+		for (Integer i : testSet) {
+			System.out.print(i + " ");
+			sum += i;
+		}
+		System.out.println();
+		assertEquals(sum, 9);
+		compare = "[0, 1 x 2, 3, 4]";
+	}
+	
 	/*
 	 * test that the number of elements is separate from the number of buckets by adding huge numbers of single elements
 	 * re: thanks to John Chen
@@ -597,20 +651,25 @@ public class UnitTestHashTableMultiSet extends junit.framework.TestCase {
 	
 	@Test
 	public void testRemoveProbeTwice() {
+		System.out.println(57);
 		testSet.add(new Integer(6));
 		testSet.add(new Integer(4)); // goes to bucket 4
 		testSet.add(new Integer(14)); // goes to bucket 5
 		testSet.add(new Integer(7)); // goes to bucket 7
 		testSet.add(new Integer(16)); // goes to bucket 8
 		testSet.add(new Integer(17)); // goes to 9
+		System.out.println(testSet);
 		assertEquals(6, testSet.size());
 		// table is 4, 14, 6, 7, 16, 17
+		System.out.println(testSet);
 		assertEquals(true, testSet.remove(16)); // continue ahead past 7
-		
+		System.out.println(testSet);
 		assertEquals(5, testSet.size());
+		System.out.println(testSet);
 		// table must be FIXED or 17 gets lost,
 		assertEquals(true, testSet.contains(17));
 		compare = "[4, 14, 6, 7, 17]";
+		System.out.println(testSet);
 	}
 	
 	// January 2008 -- changed, adjusted comments,adding testing with toArray
@@ -653,6 +712,27 @@ public class UnitTestHashTableMultiSet extends junit.framework.TestCase {
 		// table is 6 x 3
 		assertEquals(3, testSet.remove(6, 0));
 		compare = "[6 x 3]";
+	}
+	
+	@Test
+	public void testResizeForceReprobe() {
+		int bound = 7; // should result in no resize since 7 is maximum # elements
+		int start = 17;
+		for (int i = 0; i < bound; i++) {
+			Integer value = new Integer(start);
+			testSet.add(value); // all go to same bucket, linear probe forward
+			System.out.println(new Integer(start).hashCode() + " and the bucket " + value.hashCode() % 10);
+			start = start + 10;
+		}
+		String compareBefore = testSet.toString();
+		assertEquals(true, compareBefore.equals(new String("[47, 57, 67, 77, 17, 27, 37]")));
+		assertEquals(bound, testSet.size());
+		// now add the 8th which forces resize
+		testSet.add(start); // add 87,
+		assertEquals(bound + 1, testSet.size());
+		
+		// 37, 47, 67, 27, 87, 57, 77, 17
+		compare = "[37, 47, 67, 27, 87, 57, 77, 17]";
 	}
 	
 	@Test
