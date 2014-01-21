@@ -3,9 +3,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
-
-import jay.util.Deque;
 
 /**
  * A class that represents the Sky. It can hold Constellations and Stars
@@ -24,7 +23,7 @@ public class Sky implements JayACMCanvas.Paintable {
 	 * Creates a Sky
 	 */
 	public Sky() {
-		constellations = new Deque<Constellation>();
+		constellations = new LinkedList<Constellation>();
 		stars = new HashMap<Integer, Star>();
 		starNames = new HashMap<String, Integer>();
 	}
@@ -36,7 +35,9 @@ public class Sky implements JayACMCanvas.Paintable {
 	 *            - The Constellation to add
 	 */
 	public void addConstellation(Constellation constellation) {
-		constellations.add(constellation);
+		synchronized (constellations) {
+			constellations.add(constellation);
+		}
 	}
 
 	/**

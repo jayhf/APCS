@@ -4,9 +4,8 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
-
-import jay.util.Deque;
 
 /**
  * A class that represents Constellations, with a list of star pairs.
@@ -29,7 +28,7 @@ public class Constellation implements JayACMCanvas.Paintable {
 	 * Math.min((int) (scaleFactor * bFactor), 255), 128);
 	 */
 	private Color color;
-	private Collection<StarLine> starLines = new Deque<StarLine>();
+	private Collection<StarLine> starLines = new LinkedList<StarLine>();
 
 	/**
 	 * Creates a Constellation with the passed lines
