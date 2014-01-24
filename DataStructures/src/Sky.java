@@ -15,10 +15,11 @@ import java.util.Map;
  * @version 1.0 (1-20-14)
  */
 public class Sky implements JayACMCanvas.Paintable {
+	
 	private Collection<Constellation> constellations;
 	private Map<String, Integer> starNames;
 	private Map<Integer, Star> stars;
-
+	
 	/**
 	 * Creates a Sky
 	 */
@@ -27,7 +28,7 @@ public class Sky implements JayACMCanvas.Paintable {
 		stars = new HashMap<Integer, Star>();
 		starNames = new HashMap<String, Integer>();
 	}
-
+	
 	/**
 	 * Adds a Constellation to the sky
 	 * 
@@ -39,7 +40,7 @@ public class Sky implements JayACMCanvas.Paintable {
 			constellations.add(constellation);
 		}
 	}
-
+	
 	/**
 	 * Adds a Star to the sky
 	 * 
@@ -59,7 +60,7 @@ public class Sky implements JayACMCanvas.Paintable {
 				starNames.put(name, draperNumber);
 		}
 	}
-
+	
 	/**
 	 * Returns the Star with the given name, if there is one
 	 * 
@@ -70,7 +71,7 @@ public class Sky implements JayACMCanvas.Paintable {
 	public Star findStar(String name) {
 		return stars.get(starNames.get(name));
 	}
-
+	
 	/**
 	 * Draws the stars and constellations onto the graphics passed
 	 * 

@@ -28,11 +28,12 @@ public class StarProgram extends GraphicsProgram {
 		program.loadStars();
 		program.loadConstellations();
 	}
-
+	
 	private Sky sky;
-
-	public StarProgram() {}
-
+	
+	public StarProgram() {
+	}
+	
 	/**
 	 * Initializes my canvas
 	 */
@@ -43,7 +44,7 @@ public class StarProgram extends GraphicsProgram {
 		img.startDrawLoop(sky, 20);
 		return img;
 	}
-
+	
 	/**
 	 * Resizes the screen.
 	 */
@@ -51,7 +52,7 @@ public class StarProgram extends GraphicsProgram {
 	public void init() {
 		setSize(JayACMCanvas.SCREEN_WIDTH, JayACMCanvas.SCREEN_HEIGHT);
 	}
-
+	
 	private void loadConstellations() {
 		String[] fileNames = "BigDipper,Bootes,Cas,Cyg,Gemini,Hydra,UrsaMajor,UrsaMinor".split(",");
 		for (String fileName : fileNames)
@@ -66,23 +67,21 @@ public class StarProgram extends GraphicsProgram {
 				e.printStackTrace();
 			}
 	}
-
+	
 	private void loadStars() {
 		try {
 			Scanner s = new Scanner(new File("stars.txt"));
 			while (s.hasNextLine()) {
 				Scanner line = new Scanner(s.nextLine());
-				double x = line.nextDouble(), y = line.nextDouble();
-				line.nextDouble();
+				double x = line.nextDouble(), y = line.nextDouble(), z = line.nextDouble();
 				int draperNumber = line.nextInt();
 				double magnitude = line.nextDouble();
 				line.nextInt();
-				Star star = new Star(x, y, magnitude);
+				Star star = new Star(x, y, z, magnitude);
 				if (line.hasNextLine()) {
 					String[] names = line.nextLine().substring(1).split("; ");
 					sky.addStar(star, draperNumber, names);
-				}
-				else
+				} else
 					sky.addStar(star, draperNumber);
 				line.close();
 			}
