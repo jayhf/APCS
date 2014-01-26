@@ -51,7 +51,8 @@ public class Constellation implements JayACMCanvas.Paintable {
 	public void paint(Graphics2D g) {
 		g.setColor(color);
 		for (StarLine starLine : starLines)
-			g.draw(starLine);
+			if (starLine.isVisible())
+				g.draw(starLine);
 	}
 }
 
@@ -110,6 +111,10 @@ class StarLine extends Line2D {
 	@Override
 	public double getY2() {
 		return star2.getScreenY();
+	}
+
+	public boolean isVisible() {
+		return star1.isVisible() && star2.isVisible();
 	}
 
 	@Override

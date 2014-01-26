@@ -12,7 +12,7 @@ import acm.program.GraphicsProgram;
  * 
  * @see Sky
  * @author Jay
- * @version 1.0 (1-20-14)
+ * @version 1.1 (1-25-14)
  */
 @SuppressWarnings("serial")
 public class StarProgram extends GraphicsProgram {
@@ -28,12 +28,13 @@ public class StarProgram extends GraphicsProgram {
 		program.loadStars();
 		program.loadConstellations();
 	}
-	
+
 	private Sky sky;
-	
+
 	public StarProgram() {
+		addKeyListeners(sky);
 	}
-	
+
 	/**
 	 * Initializes my canvas
 	 */
@@ -44,7 +45,7 @@ public class StarProgram extends GraphicsProgram {
 		img.startDrawLoop(sky, 20);
 		return img;
 	}
-	
+
 	/**
 	 * Resizes the screen.
 	 */
@@ -52,22 +53,23 @@ public class StarProgram extends GraphicsProgram {
 	public void init() {
 		setSize(JayACMCanvas.SCREEN_WIDTH, JayACMCanvas.SCREEN_HEIGHT);
 	}
-	
+
 	private void loadConstellations() {
-		String[] fileNames = "BigDipper,Bootes,Cas,Cyg,Gemini,Hydra,UrsaMajor,UrsaMinor".split(",");
-		for (String fileName : fileNames)
-			try {
-				Scanner s = new Scanner(new File(fileName + "_lines.txt"));
-				List<String[]> lines = new LinkedList<String[]>();
-				while (s.hasNextLine())
-					lines.add(s.nextLine().split(","));
-				sky.addConstellation(new Constellation(lines, sky));
-				s.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+		File currentDirectory = new File(".");
+		for (File file : currentDirectory.listFiles())
+			if (file.getName().endsWith("_lines.txt"))
+				try {
+					Scanner s = new Scanner(file);
+					List<String[]> lines = new LinkedList<String[]>();
+					while (s.hasNextLine())
+						lines.add(s.nextLine().split(","));
+					sky.addConstellation(new Constellation(lines, sky));
+					s.close();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 	}
-	
+
 	private void loadStars() {
 		try {
 			Scanner s = new Scanner(new File("stars.txt"));
