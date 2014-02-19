@@ -16,14 +16,13 @@ public class Solver {
 		while (!boards.isEmpty()) {
 			i++;
 			Board currentBoard = boards.remove();
-			// System.out.println(currentBoard);
 			if (currentBoard.isSolved()) {
 				solution = currentBoard;
 				break;
 			}
 			for (Board newBoard : currentBoard.neighbors())
 				if (!visited.containsKey(newBoard)) {
-					visited.put(newBoard, board);
+					visited.put(newBoard, currentBoard);
 					boards.add(newBoard);
 				}
 		}
@@ -55,5 +54,11 @@ public class Solver {
 	
 	public int moves() {
 		return solution.size();
+	}
+	
+	@Override
+	public String toString() {
+		String result = solution.toString().replace("\n, ", "\n");
+		return result.substring(1, result.length() - 3) + "\n" + solution.size() + "\n";
 	}
 }

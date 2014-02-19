@@ -2,8 +2,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Board implements Comparable<Board> {
-	int[][] board;
-	int emptyX, emptyY, hashCode, moves, hamming = -1;
+	private int[][] board;
+	private int emptyX, emptyY, hashCode, moves, hamming = -1, manhattan = -1;
 	
 	public Board(int[][] board) {
 		this.board = board;
@@ -29,7 +29,8 @@ public class Board implements Comparable<Board> {
 	
 	@Override
 	public int compareTo(Board board) {
-		return board.hamming() - hamming();
+		return board.manhattan() - manhattan();// board.hamming() - hamming();// return
+		//
 	}
 	
 	@Override
@@ -79,8 +80,18 @@ public class Board implements Comparable<Board> {
 	}
 	
 	public int manhattan() {
-		// TODO WRITE THIS
-		throw new UnsupportedOperationException();
+		if (manhattan == -1) {
+			manhattan = moves;
+			for (int y = 0; y < board.length; y++)
+				for (int x = 0; x < board.length; x++)
+					manhattan += Math.abs((board[x][y] - 1) / board.length - y)
+							+ Math.abs((board[x][y] - 1) % board.length - x);
+		}
+		if (manhattan < 0) {
+			System.out.println("BLAH");
+			System.exit(0);
+		}
+		return manhattan;
 	}
 	
 	private Board move(int x, int y) {
@@ -88,7 +99,7 @@ public class Board implements Comparable<Board> {
 		for (int i = 0; i < newBoard.length; i++)
 			System.arraycopy(board[i], 0, newBoard[i], 0, board.length);
 		newBoard[emptyX][emptyY] = newBoard[x][y];
-		newBoard[x][y] = 0;
+		newBoard[x][y] = board.length * board.length;
 		return new Board(newBoard, x, y, moves + 1);
 	}
 	
@@ -107,6 +118,10 @@ public class Board implements Comparable<Board> {
 	
 	@Override
 	public String toString() {
-		return Arrays.deepToString(board);
+		board[emptyX][emptyY] = 0;
+		String result = Arrays.deepToString(board);
+		board[emptyX][emptyY] = board.length * board.length;
+		result = result.substring(2, result.length() - 2).replace("], [", "\n") + "\n\n";
+		return result;
 	}
 }

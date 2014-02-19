@@ -14,11 +14,13 @@ public class Main {
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		System.out.println(new Board(new int[][] { { 1, 4, 7 }, { 2, 5, 8 }, { 3, 6, 9 } }).isSolved());
-		Board board = loadBoard(new File("files/puzzle04.txt"));
-		System.out.println(board);
-		System.out.println(board.neighbors());
-		System.out.println(board.neighbors().iterator().next().neighbors());
-		System.out.println(Solver.solve(board));
+		// System.out.println(Solver.solve()));
+		Board board = loadBoard(new File("files/puzzle30.txt"));
+		/*
+		 * System.out.println(board); System.out.println(board.neighbors());
+		 * System.out.println(board.neighbors().iterator().next().neighbors());
+		 */
+		System.out.println(new Solver(board));// board.manhattan());
+		// System.out.println(new Solver(board));
 	}
 }
