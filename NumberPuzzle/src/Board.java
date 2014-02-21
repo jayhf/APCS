@@ -7,16 +7,15 @@ public class Board implements Comparable<Board> {
 	
 	public Board(int[][] board) {
 		this.board = board;
-		OUTER: for (int x = 0; x < board.length; x++)
-			for (int y = 0; y < board.length; y++)
-				if (board[x][y] == 0 || board[x][y] == board.length * board.length) {
-					emptyX = x;
-					emptyY = y;
-					board[x][y] = board.length * board.length;
-					break OUTER;
-				}
 		hashCode = Arrays.deepHashCode(board);
 		moves = 0;
+		OUTER: for (int x = 0; x < board.length; x++)
+			for (int y = 0; y < board.length; y++)
+				if (board[x][y] == 0) {
+					emptyX = x;
+					emptyY = y;
+					break OUTER;
+				}
 	}
 	
 	public Board(int[][] board, int emptyX, int emptyY, int moves) {
@@ -29,8 +28,7 @@ public class Board implements Comparable<Board> {
 	
 	@Override
 	public int compareTo(Board board) {
-		return board.manhattan() - manhattan();// board.hamming() - hamming();// return
-		//
+		return hamming() - board.hamming();// manhattan() - board.manhattan(); // return
 	}
 	
 	@Override
@@ -41,7 +39,11 @@ public class Board implements Comparable<Board> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+		if (obj.hashCode() != hashCode())
+			return false;
 		Board other = (Board) obj;
+		if (compareTo(other) + moves - other.moves != 0)
+			return false;
 		if (!Arrays.deepEquals(board, other.board))
 			return false;
 		return true;
@@ -53,8 +55,9 @@ public class Board implements Comparable<Board> {
 			int i = 0;
 			for (int y = 0; y < board.length; y++)
 				for (int x = 0; x < board.length; x++)
-					if (board[x][y] == ++i)
+					if (board[x][y] != ++i)
 						hamming++;
+			hamming--;
 		}
 		return hamming;
 	}
@@ -74,7 +77,7 @@ public class Board implements Comparable<Board> {
 		int i = 0;
 		for (int y = 0; y < board.length; y++)
 			for (int x = 0; x < board.length; x++)
-				if (board[x][y] != ++i)
+				if (board[y][x] != ++i && board[y][x] != 0)
 					return false;
 		return true;
 	}
@@ -83,9 +86,12 @@ public class Board implements Comparable<Board> {
 		if (manhattan == -1) {
 			manhattan = moves;
 			for (int y = 0; y < board.length; y++)
-				for (int x = 0; x < board.length; x++)
-					manhattan += Math.abs((board[x][y] - 1) / board.length - y)
-							+ Math.abs((board[x][y] - 1) % board.length - x);
+				for (int x = 0; x < board.length; x++) {
+					System.out.println(board[x][y]);
+					if (x != emptyX || y != emptyY)
+						manhattan += Math.abs((board[x][y] - 1) / board.length - y)
+								+ Math.abs((board[x][y] - 1) % board.length - x);
+				}
 		}
 		if (manhattan < 0) {
 			System.out.println("BLAH");
@@ -99,7 +105,7 @@ public class Board implements Comparable<Board> {
 		for (int i = 0; i < newBoard.length; i++)
 			System.arraycopy(board[i], 0, newBoard[i], 0, board.length);
 		newBoard[emptyX][emptyY] = newBoard[x][y];
-		newBoard[x][y] = board.length * board.length;
+		newBoard[x][y] = 0;
 		return new Board(newBoard, x, y, moves + 1);
 	}
 	
@@ -118,9 +124,7 @@ public class Board implements Comparable<Board> {
 	
 	@Override
 	public String toString() {
-		board[emptyX][emptyY] = 0;
 		String result = Arrays.deepToString(board);
-		board[emptyX][emptyY] = board.length * board.length;
 		result = result.substring(2, result.length() - 2).replace("], [", "\n") + "\n\n";
 		return result;
 	}
