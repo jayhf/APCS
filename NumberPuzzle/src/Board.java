@@ -1,15 +1,16 @@
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class Board implements Comparable<Board> {
+public class Board {
 	private int[][] board;
-	private int emptyX, emptyY, hashCode, moves, hamming = -1, manhattan = -1;
-	
+	private int emptyX, emptyY, hashCode, moves, hamming = -1, manhattan = -1, jay = -1;
+
 	public Board(int[][] board) {
 		this.board = board;
 		hashCode = Arrays.deepHashCode(board);
 		moves = 0;
-		OUTER: for (int x = 0; x < board.length; x++)
+		OUTER:
+		for (int x = 0; x < board.length; x++)
 			for (int y = 0; y < board.length; y++)
 				if (board[x][y] == 0) {
 					emptyX = x;
@@ -17,7 +18,7 @@ public class Board implements Comparable<Board> {
 					break OUTER;
 				}
 	}
-	
+
 	public Board(int[][] board, int emptyX, int emptyY, int moves) {
 		this.board = board;
 		this.emptyX = emptyX;
@@ -25,12 +26,7 @@ public class Board implements Comparable<Board> {
 		hashCode = Arrays.deepHashCode(board);
 		this.moves = moves;
 	}
-	
-	@Override
-	public int compareTo(Board board) {
-		return hamming() - board.hamming();// manhattan() - board.manhattan(); // return
-	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -42,13 +38,11 @@ public class Board implements Comparable<Board> {
 		if (obj.hashCode() != hashCode())
 			return false;
 		Board other = (Board) obj;
-		if (compareTo(other) + moves - other.moves != 0)
-			return false;
 		if (!Arrays.deepEquals(board, other.board))
 			return false;
 		return true;
 	}
-	
+
 	public int hamming() {
 		if (hamming == -1) {
 			hamming = moves;
@@ -61,37 +55,45 @@ public class Board implements Comparable<Board> {
 		}
 		return hamming;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return hashCode;
 	}
-	
+
 	public boolean isSolvable() {
 		// TODO WRITE THIS
 		// Sum up number of swaps to get each one to right place. Even= solvable odd=not?
 		return true;
 	}
-	
+
 	public boolean isSolved() {
-		int i = 0;
-		for (int y = 0; y < board.length; y++)
-			for (int x = 0; x < board.length; x++)
-				if (board[y][x] != ++i && board[y][x] != 0)
-					return false;
-		return true;
+		return hamming() == moves;
 	}
-	
+
+	public int jayHeuristic() {
+		if (jay == -1) {
+			jay = 0;
+			for (int y = 0; y < board.length; y++)
+				for (int x = 0; x < board.length; x++)
+					jay += Math.abs((board[x][y] - 1) / board.length - y)
+							+ Math.abs((board[x][y] - 1) % board.length - x);
+			jay -= Math.abs((board[emptyX][emptyY] - 1) / board.length - emptyY)
+					+ Math.abs((board[emptyX][emptyX] - 1) % board.length - emptyX);
+			jay = 3 * jay / 2 + moves;
+		}
+		return jay;
+	}
+
 	public int manhattan() {
 		if (manhattan == -1) {
 			manhattan = moves;
 			for (int y = 0; y < board.length; y++)
-				for (int x = 0; x < board.length; x++) {
-					System.out.println(board[x][y]);
-					if (x != emptyX || y != emptyY)
-						manhattan += Math.abs((board[x][y] - 1) / board.length - y)
-								+ Math.abs((board[x][y] - 1) % board.length - x);
-				}
+				for (int x = 0; x < board.length; x++)
+					manhattan += Math.abs((board[x][y] - 1) / board.length - y)
+							+ Math.abs((board[x][y] - 1) % board.length - x);
+			manhattan -= Math.abs((board[emptyX][emptyY] - 1) / board.length - emptyY)
+					+ Math.abs((board[emptyX][emptyX] - 1) % board.length - emptyX);
 		}
 		if (manhattan < 0) {
 			System.out.println("BLAH");
@@ -99,7 +101,7 @@ public class Board implements Comparable<Board> {
 		}
 		return manhattan;
 	}
-	
+
 	private Board move(int x, int y) {
 		int[][] newBoard = new int[board.length][board.length];
 		for (int i = 0; i < newBoard.length; i++)
@@ -108,7 +110,7 @@ public class Board implements Comparable<Board> {
 		newBoard[x][y] = 0;
 		return new Board(newBoard, x, y, moves + 1);
 	}
-	
+
 	public Iterable<Board> neighbors() {
 		LinkedList<Board> neighbors = new LinkedList<Board>();
 		if (emptyX > 0)
@@ -121,11 +123,20 @@ public class Board implements Comparable<Board> {
 			neighbors.add(move(emptyX, emptyY + 1));
 		return neighbors;
 	}
-	
+
 	@Override
 	public String toString() {
-		String result = Arrays.deepToString(board);
-		result = result.substring(2, result.length() - 2).replace("], [", "\n") + "\n\n";
-		return result;
+		int numberSize = (int) Math.floor(Math.log10(board.length * board.length) + 1) + 1;
+		StringBuilder result = new StringBuilder((numberSize * board.length + 1) * board.length);
+		for (int y = 0; y < board.length; y++) {
+			for (int x = 0; x < board.length; x++) {
+				StringBuilder number = new StringBuilder().append(board[x][y]);
+				while (number.length() < numberSize)
+					number.insert(0, ' ');
+				result.append(number);
+			}
+			result.append('\n');
+		}
+		return result.toString();
 	}
 }
