@@ -12,16 +12,18 @@ public class Main {
 				board[x][y] = s.nextInt();
 		return new Board(board);
 	}
-
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		// System.out.println(new Board(new int[][] { { 1, 3 }, { 2, 0 } }).isSolved());
 		// System.out.println(Solver.solve()));
-		Board board = loadBoard(new File("files/puzzle45.txt")); // new Board(new int[][] { {3, 2}, {1, 0}}); //
+		Board board = loadBoard(new File("files/puzzle38.txt")); // new Board(new int[][] { {3, 2}, {1, 0}}); //
 																	// loadBoard(new File("files/puzzle45.txt"));
 		/*
 		 * System.out.println(board); System.out.println(board.neighbors());
 		 * System.out.println(board.neighbors().iterator().next().neighbors());
 		 */
+		long time = System.nanoTime();
 		System.out.println(new Solver(board));
+		System.out.println((System.nanoTime() - time) / Math.pow(10, 9));
 	}
 }

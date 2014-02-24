@@ -4,13 +4,12 @@ import java.util.LinkedList;
 public class Board {
 	private int[][] board;
 	private int emptyX, emptyY, hashCode, moves, hamming = -1, manhattan = -1, jay = -1;
-
+	
 	public Board(int[][] board) {
 		this.board = board;
 		hashCode = Arrays.deepHashCode(board);
 		moves = 0;
-		OUTER:
-		for (int x = 0; x < board.length; x++)
+		OUTER: for (int x = 0; x < board.length; x++)
 			for (int y = 0; y < board.length; y++)
 				if (board[x][y] == 0) {
 					emptyX = x;
@@ -18,7 +17,7 @@ public class Board {
 					break OUTER;
 				}
 	}
-
+	
 	public Board(int[][] board, int emptyX, int emptyY, int moves) {
 		this.board = board;
 		this.emptyX = emptyX;
@@ -26,7 +25,11 @@ public class Board {
 		hashCode = Arrays.deepHashCode(board);
 		this.moves = moves;
 	}
-
+	
+	public boolean equals(Board other) {
+		return Arrays.deepEquals(board, other.board);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -42,7 +45,11 @@ public class Board {
 			return false;
 		return true;
 	}
-
+	
+	public int getSize() {
+		return board.length;
+	}
+	
 	public int hamming() {
 		if (hamming == -1) {
 			hamming = moves;
@@ -55,22 +62,22 @@ public class Board {
 		}
 		return hamming;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return hashCode;
 	}
-
+	
 	public boolean isSolvable() {
 		// TODO WRITE THIS
 		// Sum up number of swaps to get each one to right place. Even= solvable odd=not?
 		return true;
 	}
-
+	
 	public boolean isSolved() {
 		return hamming() == moves;
 	}
-
+	
 	public int jayHeuristic() {
 		if (jay == -1) {
 			jay = 0;
@@ -84,7 +91,7 @@ public class Board {
 		}
 		return jay;
 	}
-
+	
 	public int manhattan() {
 		if (manhattan == -1) {
 			manhattan = moves;
@@ -101,7 +108,7 @@ public class Board {
 		}
 		return manhattan;
 	}
-
+	
 	private Board move(int x, int y) {
 		int[][] newBoard = new int[board.length][board.length];
 		for (int i = 0; i < newBoard.length; i++)
@@ -110,7 +117,7 @@ public class Board {
 		newBoard[x][y] = 0;
 		return new Board(newBoard, x, y, moves + 1);
 	}
-
+	
 	public Iterable<Board> neighbors() {
 		LinkedList<Board> neighbors = new LinkedList<Board>();
 		if (emptyX > 0)
@@ -123,7 +130,7 @@ public class Board {
 			neighbors.add(move(emptyX, emptyY + 1));
 		return neighbors;
 	}
-
+	
 	@Override
 	public String toString() {
 		int numberSize = (int) Math.floor(Math.log10(board.length * board.length) + 1) + 1;

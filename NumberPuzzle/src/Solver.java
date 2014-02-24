@@ -8,25 +8,33 @@ public class Solver {
 	public static List<Board> solve(Board board) {
 		return solve(board, new JayHeuristicComparator());// (b1,b2)->b1.hamming()-b2.hamming()
 	}
-
+	
 	public static List<Board> solve(Board board, Comparator<Board> comparator) {
 		if (!board.isSolvable())
 			return null;
+		int[][] solvedState = new int[board.getSize()][board.getSize()];
+		int j = 1;
+		for (int y = 0; y < board.getSize(); y++)
+			for (int x = 0; x < board.getSize(); x++)
+				solvedState[x][y] = j++;
+		solvedState[board.getSize() - 1][board.getSize() - 1] = 0;
+		Board solved = new Board(solvedState);
 		HashMap<Board, Board> visited = new HashMap<Board, Board>();
 		visited.put(board, null);
 		PriorityQueue<Board> boards = new PriorityQueue<Board>(100, comparator);
+		// HashedQueue boards = new HashedQueue();
 		boards.add(board);
 		Board solution = null;
 		int i = 0;
 		int threshold = 10;
 		while (!boards.isEmpty()) {
 			i++;
-			if (boards.size() > threshold) {
-				System.out.println(threshold);
+			if (i > threshold)
 				threshold *= 10;
-			}
+			// return null;
 			Board currentBoard = boards.remove();
-			if (currentBoard.isSolved()) {
+			// System.out.println(currentBoard);
+			if (currentBoard.equals(solved)) {
 				solution = currentBoard;
 				break;
 			}
@@ -47,25 +55,29 @@ public class Solver {
 		} else
 			return null;
 	}
-
+	
 	private List<Board> solution;
-
+	
 	public Solver(Board board) {
 		solution = solve(board);
 	}
-
+	
+	public Solver(Board board, Comparator<Board> comparator) {
+		solution = solve(board, comparator);
+	}
+	
 	public List<Board> getMoves() {
 		return solution;
 	}
-
+	
 	public boolean isSolvable() {
 		return solution == null;
 	}
-
+	
 	public int moves() {
 		return solution.size();
 	}
-
+	
 	@Override
 	public String toString() {
 		String result = solution.toString();
