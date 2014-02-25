@@ -3,8 +3,7 @@ import java.util.LinkedList;
 public abstract class AbstractBoard {
 	protected int emptyX, emptyY, hamming = -1, manhattan = -1, jay = -1, hashCode = -1, moves, size = -1;
 
-	public AbstractBoard() {
-	}
+	public AbstractBoard() {}
 
 	public boolean equals(AbstractBoard other) {
 		if (other.size != size)

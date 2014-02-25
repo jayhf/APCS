@@ -24,11 +24,11 @@ public class Main {
 		 * System.out.println(board); System.out.println(board.neighbors());
 		 * System.out.println(board.neighbors().iterator().next().neighbors());
 		 */
-		for (int i = 0; i < 3; i++)
-			System.out.println(new Solver(board).moves());
+		for (int i = 0; i < 10; i++)
+			System.out.println(new Solver(board));
 		long time = System.nanoTime();
-		for (int i = 0; i < 3; i++)
-			System.out.println(new Solver(board).moves());
-		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 3 + " seconds");
+		for (int i = 0; i < 10; i++)
+			System.out.println(new Solver(board));
+		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 10 + " seconds (average)");
 	}
 }
