@@ -2,11 +2,10 @@ import java.util.LinkedList;
 
 public abstract class AbstractBoard {
 	protected int emptyX, emptyY, hamming = -1, manhattan = -1, jay = -1, hashCode = -1, moves, size = -1;
-	
+
 	public AbstractBoard() {
-		
 	}
-	
+
 	public boolean equals(AbstractBoard other) {
 		if (other.size != size)
 			return false;
@@ -16,7 +15,7 @@ public abstract class AbstractBoard {
 					return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
@@ -34,11 +33,11 @@ public abstract class AbstractBoard {
 					return false;
 		return true;
 	}
-	
+
 	protected abstract int getSize();
-	
+
 	public abstract int getValue(int x, int y);
-	
+
 	public int hamming() {
 		if (hamming == -1) {
 			hamming = moves;
@@ -51,7 +50,7 @@ public abstract class AbstractBoard {
 		}
 		return hamming;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		if (hashCode == -1) {
@@ -64,13 +63,13 @@ public abstract class AbstractBoard {
 		}
 		return hashCode;
 	}
-	
+
 	public void init() {
 		size = getSize();
 	}
-	
+
 	public abstract boolean isSolvable();
-	
+
 	public boolean isSolved() {
 		if (hamming == -1) {
 			int i = 0;
@@ -82,7 +81,7 @@ public abstract class AbstractBoard {
 		} else
 			return hamming == moves;
 	}
-	
+
 	public int jayHeuristic() {
 		if (jay == -1) {
 			jay = 0;
@@ -97,7 +96,7 @@ public abstract class AbstractBoard {
 		}
 		return jay;
 	}
-	
+
 	public int manhattan() {
 		if (manhattan == -1) {
 			manhattan = moves;
@@ -111,9 +110,9 @@ public abstract class AbstractBoard {
 		}
 		return manhattan;
 	}
-	
+
 	protected abstract AbstractBoard move(int x, int y);
-	
+
 	public Iterable<AbstractBoard> neighbors() {
 		LinkedList<AbstractBoard> neighbors = new LinkedList<AbstractBoard>();
 		if (emptyX > 0)
@@ -126,7 +125,9 @@ public abstract class AbstractBoard {
 			neighbors.add(move(emptyX, emptyY + 1));
 		return neighbors;
 	}
-	
+
+	protected abstract int[][] toArray();
+
 	@Override
 	public String toString() {
 		int numberSize = (int) Math.floor(Math.log10(size * size) + 1) + 1;

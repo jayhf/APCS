@@ -12,20 +12,23 @@ public class Main {
 				board[x][y] = s.nextInt();
 		return new Board(board);
 	}
-	
+
 	public static void main(String[] args) throws FileNotFoundException {
 		// System.out.println(new AbstractBoard(new int[][] { { 1, 3 }, { 2, 0 } }).isSolved());
 		// System.out.println(Solver.solve()));
-		AbstractBoard board = loadAbstractBoard(new File("files/puzzle25.txt")); // new AbstractBoard(new int[][] { {3,
-																					// 2}, {1, 0}}); //
+		AbstractBoard board = loadAbstractBoard(new File("files/puzzle4x4-hard2.txt")); // new AbstractBoard(new int[][]
+		// { {3,
+		// 2}, {1, 0}}); //
 		// loadAbstractBoard(new File("files/puzzle45.txt"));
 		/*
 		 * System.out.println(board); System.out.println(board.neighbors());
 		 * System.out.println(board.neighbors().iterator().next().neighbors());
 		 */
+		for (int i = 0; i < 3; i++)
+			System.out.println(new Solver(board).moves());
 		long time = System.nanoTime();
-		for (int i = 0; i < 20; i++)
-			System.out.println(new Solver(board));
-		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 20 + "seconds");
+		for (int i = 0; i < 3; i++)
+			System.out.println(new Solver(board).moves());
+		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 3 + " seconds");
 	}
 }

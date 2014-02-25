@@ -6,9 +6,9 @@ import java.util.PriorityQueue;
 
 public class Solver {
 	public static List<AbstractBoard> solve(AbstractBoard board) {
-		return solve(board, new ManhattanComparator());// (b1,b2)->b1.hamming()-b2.hamming()
+		return solve(board, new ManhattanComparator());// java8: (b1,b2)->b1.manhattan()-b2.manhattan()
 	}
-	
+
 	public static List<AbstractBoard> solve(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		if (!board.isSolvable())
 			return null;
@@ -55,29 +55,29 @@ public class Solver {
 		} else
 			return null;
 	}
-	
+
 	private List<AbstractBoard> solution;
-	
+
 	public Solver(AbstractBoard board) {
 		solution = solve(board);
 	}
-	
+
 	public Solver(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		solution = solve(board, comparator);
 	}
-	
+
 	public List<AbstractBoard> getMoves() {
 		return solution;
 	}
-	
+
 	public boolean isSolvable() {
 		return solution == null;
 	}
-	
+
 	public int moves() {
 		return solution.size();
 	}
-	
+
 	@Override
 	public String toString() {
 		String result = solution.toString();
