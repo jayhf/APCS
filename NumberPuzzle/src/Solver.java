@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 
 public class Solver {
 	public static List<AbstractBoard> solve(AbstractBoard board) {
-		return solve(board, new JayHeuristicComparator());// (b1,b2)->b1.hamming()-b2.hamming()
+		return solve(board, new ManhattanComparator());// (b1,b2)->b1.hamming()-b2.hamming()
 	}
 	
 	public static List<AbstractBoard> solve(AbstractBoard board, Comparator<AbstractBoard> comparator) {
