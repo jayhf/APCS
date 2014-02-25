@@ -1,13 +1,17 @@
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class Board {
-	private int[][] board;
+public class Board extends AbstractBoard {
+	protected int[][] board;
 	private int emptyX, emptyY, hashCode, moves, hamming = -1, manhattan = -1, jay = -1;
 	
 	public Board(int[][] board) {
 		this.board = board;
-		hashCode = Arrays.deepHashCode(board);
+		hashCode = emptyX * 31 + emptyY;// Arrays.deepHashCode(board);
+		for (int i = 0; i < board.length; i++)
+			hashCode = hashCode * 31 + board[i][i];
+		for (int i = 0; i < board.length; i++)
+			hashCode = hashCode * 31 + board[board.length - i - 1][i];
 		moves = 0;
 		OUTER: for (int x = 0; x < board.length; x++)
 			for (int y = 0; y < board.length; y++)
@@ -26,6 +30,7 @@ public class Board {
 		this.moves = moves;
 	}
 	
+	@Override
 	public boolean equals(Board other) {
 		return Arrays.deepEquals(board, other.board);
 	}
@@ -46,10 +51,17 @@ public class Board {
 		return true;
 	}
 	
+	@Override
 	public int getSize() {
 		return board.length;
 	}
 	
+	@Override
+	public int getValue(int x, int y) {
+		return board[x][y];
+	}
+	
+	@Override
 	public int hamming() {
 		if (hamming == -1) {
 			hamming = moves;
@@ -68,6 +80,7 @@ public class Board {
 		return hashCode;
 	}
 	
+	@Override
 	public boolean isSolvable() {
 		// TODO WRITE THIS
 		// Sum up number of swaps to get each one to right place. Even= solvable odd=not?
@@ -75,9 +88,18 @@ public class Board {
 	}
 	
 	public boolean isSolved() {
-		return hamming() == moves;
-	}
+		if (hamming == -1) {
+			int i = 0;
+			for (int y = 0; y < board.length; y++)
+				for (int x = 0; x < board.length; x++)
+					if (board[x][y] != ++i)
+						return false;
+			return true;
+		} else
+			return hamming == moves;
+	};
 	
+	@Override
 	public int jayHeuristic() {
 		if (jay == -1) {
 			jay = 0;
@@ -92,6 +114,7 @@ public class Board {
 		return jay;
 	}
 	
+	@Override
 	public int manhattan() {
 		if (manhattan == -1) {
 			manhattan = moves;
@@ -109,15 +132,18 @@ public class Board {
 		return manhattan;
 	}
 	
-	private Board move(int x, int y) {
+	private Board move(final int x, final int y) {
+		
 		int[][] newBoard = new int[board.length][board.length];
 		for (int i = 0; i < newBoard.length; i++)
 			System.arraycopy(board[i], 0, newBoard[i], 0, board.length);
 		newBoard[emptyX][emptyY] = newBoard[x][y];
 		newBoard[x][y] = 0;
 		return new Board(newBoard, x, y, moves + 1);
+		
 	}
 	
+	@Override
 	public Iterable<Board> neighbors() {
 		LinkedList<Board> neighbors = new LinkedList<Board>();
 		if (emptyX > 0)

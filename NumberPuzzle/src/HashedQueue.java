@@ -2,18 +2,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class HashedQueue {
-	private HashMap<Integer, LinkedList<Board>> boards = new HashMap<Integer, LinkedList<Board>>();
+	private HashMap<Integer, LinkedList<AbstractBoard>> boards = new HashMap<Integer, LinkedList<AbstractBoard>>();
 	private int current = 0;
 	
 	public HashedQueue() {
 	}
 	
-	public void add(Board board) {
+	public void add(AbstractBoard board) {
 		int value = board.manhattan();
 		if (value < current)
 			current = value;
 		if (!boards.containsKey(value))
-			boards.put(value, new LinkedList<Board>());
+			boards.put(value, new LinkedList<AbstractBoard>());
 		boards.get(value).addFirst(board);
 	}
 	
@@ -21,10 +21,10 @@ public class HashedQueue {
 		return boards.isEmpty();
 	}
 	
-	public Board remove() {
+	public AbstractBoard remove() {
 		while (!boards.containsKey(current))
 			current++;
-		Board result = boards.get(current).pop();
+		AbstractBoard result = boards.get(current).pop();
 		if (boards.get(current).isEmpty())
 			boards.remove(current);
 		return result;

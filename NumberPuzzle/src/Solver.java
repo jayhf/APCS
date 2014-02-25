@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class Solver {
-	public static List<Board> solve(Board board) {
+	public static List<AbstractBoard> solve(AbstractBoard board) {
 		return solve(board, new JayHeuristicComparator());// (b1,b2)->b1.hamming()-b2.hamming()
 	}
 	
-	public static List<Board> solve(Board board, Comparator<Board> comparator) {
+	public static List<AbstractBoard> solve(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		if (!board.isSolvable())
 			return null;
 		int[][] solvedState = new int[board.getSize()][board.getSize()];
@@ -18,13 +18,13 @@ public class Solver {
 			for (int x = 0; x < board.getSize(); x++)
 				solvedState[x][y] = j++;
 		solvedState[board.getSize() - 1][board.getSize() - 1] = 0;
-		Board solved = new Board(solvedState);
-		HashMap<Board, Board> visited = new HashMap<Board, Board>();
+		AbstractBoard solved = new Board(solvedState);
+		HashMap<AbstractBoard, AbstractBoard> visited = new HashMap<AbstractBoard, AbstractBoard>();
 		visited.put(board, null);
-		PriorityQueue<Board> boards = new PriorityQueue<Board>(100, comparator);
+		PriorityQueue<AbstractBoard> boards = new PriorityQueue<AbstractBoard>(100, comparator);
 		// HashedQueue boards = new HashedQueue();
 		boards.add(board);
-		Board solution = null;
+		AbstractBoard solution = null;
 		int i = 0;
 		int threshold = 10;
 		while (!boards.isEmpty()) {
@@ -32,22 +32,22 @@ public class Solver {
 			if (i > threshold)
 				threshold *= 10;
 			// return null;
-			Board currentBoard = boards.remove();
-			// System.out.println(currentBoard);
-			if (currentBoard.equals(solved)) {
-				solution = currentBoard;
+			AbstractBoard currentAbstractBoard = boards.remove();
+			// System.out.println(currentAbstractBoard);
+			if (currentAbstractBoard.equals(solved)) {
+				solution = currentAbstractBoard;
 				break;
 			}
-			for (Board newBoard : currentBoard.neighbors())
-				if (!visited.containsKey(newBoard)) {
-					visited.put(newBoard, currentBoard);
-					boards.add(newBoard);
+			for (AbstractBoard newAbstractBoard : currentAbstractBoard.neighbors())
+				if (!visited.containsKey(newAbstractBoard)) {
+					visited.put(newAbstractBoard, currentAbstractBoard);
+					boards.add(newAbstractBoard);
 				}
 		}
-		System.out.println("Number of Boards: " + i);
+		System.out.println("Number of AbstractBoards: " + i);
 		if (solution != null && visited.containsKey(solution)) {
-			LinkedList<Board> path = new LinkedList<Board>();
-			Board current = solution;
+			LinkedList<AbstractBoard> path = new LinkedList<AbstractBoard>();
+			AbstractBoard current = solution;
 			do
 				path.addFirst(current);
 			while ((current = visited.get(current)) != null);
@@ -56,17 +56,17 @@ public class Solver {
 			return null;
 	}
 	
-	private List<Board> solution;
+	private List<AbstractBoard> solution;
 	
-	public Solver(Board board) {
+	public Solver(AbstractBoard board) {
 		solution = solve(board);
 	}
 	
-	public Solver(Board board, Comparator<Board> comparator) {
+	public Solver(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		solution = solve(board, comparator);
 	}
 	
-	public List<Board> getMoves() {
+	public List<AbstractBoard> getMoves() {
 		return solution;
 	}
 	
