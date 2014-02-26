@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
-	public static AbstractBoard loadAbstractBoard(File file) throws FileNotFoundException {
+	public static Board loadBoard(File file) throws FileNotFoundException {
 		Scanner s = new Scanner(file);
 		int size = s.nextInt();
 		int[][] board = new int[size][size];
@@ -13,11 +13,11 @@ public class Main {
 		s.close();
 		return new Board(board);
 	}
-
+	
 	public static void main(String[] args) throws FileNotFoundException {
-		// System.out.println(new AbstractBoard(new int[][] { { 1, 3 }, { 2, 0 } }).isSolved());
+		// System.out.println(new Board(new int[][] { { 1, 3 }, { 2, 0 } }).isSolvable());
 		// System.out.println(Solver.solve()));
-		AbstractBoard board = loadAbstractBoard(new File("files/puzzle4x4-hard2.txt")); // new AbstractBoard(new int[][]
+		AbstractBoard board = loadBoard(new File("files/puzzle45.txt")); // new AbstractBoard(new int[][]
 		// { {3,
 		// 2}, {1, 0}}); //
 		// loadAbstractBoard(new File("files/puzzle45.txt"));
@@ -25,11 +25,12 @@ public class Main {
 		 * System.out.println(board); System.out.println(board.neighbors());
 		 * System.out.println(board.neighbors().iterator().next().neighbors());
 		 */
-		for (int i = 0; i < 10; i++)
-			System.out.println(new Solver(board));
-		long time = System.nanoTime();
-		for (int i = 0; i < 10; i++)
-			System.out.println(new Solver(board));
-		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 10 + " seconds (average)");
+		System.out.println(board.isSolvable());
+		/*
+		 * for (int i = 0; i < 10; i++) System.out.println(new Solver(board)); long time = System.nanoTime(); for (int i
+		 * = 0; i < 10; i++) System.out.println(new Solver(board)); System.out.println((System.nanoTime() - time) *
+		 * Math.pow(10, -9) / 10 + " seconds (average)");
+		 */
+		
 	}
 }

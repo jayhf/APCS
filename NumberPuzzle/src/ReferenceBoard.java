@@ -2,14 +2,14 @@ import java.util.LinkedList;
 
 public class ReferenceBoard extends AbstractBoard {
 	private AbstractBoard previous;
-
+	
 	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY) {
 		super(board.size, board.moves + 1);
 		previous = board;
 		emptyX = nowEmptyX;
 		emptyY = nowEmptyY;
 	}
-
+	
 	@Override
 	public int getValue(int x, int y) {
 		if (x == emptyX && y == emptyY)
@@ -18,7 +18,7 @@ public class ReferenceBoard extends AbstractBoard {
 			return previous.getValue(emptyX, emptyY);
 		return previous.getValue(x, y);
 	}
-
+	
 	@Override
 	public int hamming() {
 		if (hamming == -1)
@@ -29,17 +29,11 @@ public class ReferenceBoard extends AbstractBoard {
 					hamming--;
 				else if ((value - 1) / size == previous.emptyY && (value - 1) % size == previous.emptyX)
 					hamming++;
-			}
-			else
+			} else
 				hamming = super.hamming();
 		return hamming;
 	}
-
-	@Override
-	public boolean isSolvable() {
-		return true;
-	}
-
+	
 	@Override
 	public int manhattan() {
 		if (manhattan == -1)
@@ -49,18 +43,17 @@ public class ReferenceBoard extends AbstractBoard {
 				manhattan -= Math.abs((value - 1) / size - emptyY) + Math.abs((value - 1) % size - emptyX);
 				manhattan += Math.abs((value - 1) / size - previous.emptyY)
 						+ Math.abs((value - 1) % size - previous.emptyX);
-			}
-			else
+			} else
 				manhattan = super.manhattan();
 		return manhattan + moves;
 	}
-
+	
 	@Override
 	protected AbstractBoard move(int x, int y) {
 		ReferenceBoard reference = new ReferenceBoard(this, x, y);
 		return new Board(reference.toArray(), x, y, moves, reference.hamming, reference.manhattan);
 	}
-
+	
 	@Override
 	public Iterable<AbstractBoard> neighbors() {
 		LinkedList<AbstractBoard> neighbors = new LinkedList<AbstractBoard>();
@@ -74,7 +67,7 @@ public class ReferenceBoard extends AbstractBoard {
 			neighbors.add(move(emptyX, emptyY + 1));
 		return neighbors;
 	}
-
+	
 	@Override
 	protected int[][] toArray() {
 		int[][] result = previous.toArray();

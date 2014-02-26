@@ -8,7 +8,7 @@ public class Solver {
 	public static List<AbstractBoard> solve(AbstractBoard board) {
 		return solve(board, new ManhattanComparator());// java8: (b1,b2)->b1.manhattan()-b2.manhattan()
 	}
-
+	
 	public static List<AbstractBoard> solve(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		if (!board.isSolvable())
 			return null;
@@ -22,7 +22,6 @@ public class Solver {
 		HashMap<AbstractBoard, AbstractBoard> visited = new HashMap<AbstractBoard, AbstractBoard>();
 		visited.put(board, null);
 		PriorityQueue<AbstractBoard> boards = new PriorityQueue<AbstractBoard>(100, comparator);
-		// HashedQueue boards = new HashedQueue();
 		boards.add(board);
 		AbstractBoard solution = null;
 		int i = 0;
@@ -31,9 +30,7 @@ public class Solver {
 			i++;
 			if (i > threshold)
 				threshold *= 10;
-			// return null;
 			AbstractBoard currentAbstractBoard = boards.remove();
-			// System.out.println(currentAbstractBoard);
 			if (currentAbstractBoard.equals(solved)) {
 				solution = currentAbstractBoard;
 				break;
@@ -55,32 +52,34 @@ public class Solver {
 		} else
 			return null;
 	}
-
+	
 	private List<AbstractBoard> solution;
-
+	
 	public Solver(AbstractBoard board) {
 		solution = solve(board);
 	}
-
+	
 	public Solver(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		solution = solve(board, comparator);
 	}
-
+	
 	public List<AbstractBoard> getMoves() {
 		return solution;
 	}
-
+	
 	public boolean isSolvable() {
 		return solution == null;
 	}
-
+	
 	public int moves() {
 		return solution.size();
 	}
-
+	
 	@Override
 	public String toString() {
-		String result = solution == null ? solution.toString() : "[]";
+		if (solution == null)
+			return "No Solution Could Be Found!";
+		String result = solution.toString();
 		return result.substring(1, result.length() - 1).replace(", ", "\n") + "Number of moves to solution: "
 				+ solution.size() + "\n";
 	}
