@@ -6,7 +6,6 @@ public class ReferenceBoard extends AbstractBoard {
 
 	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY) {
 		moves = board.moves + 1;
-		depth = 0;
 		previous = board;
 		emptyX = nowEmptyX;
 		emptyY = nowEmptyY;
@@ -38,14 +37,17 @@ public class ReferenceBoard extends AbstractBoard {
 
 	@Override
 	public int hamming() {
-		if (hamming == -1) {
-			hamming = previous.hamming() + 1;
-			int value = previous.getValue(emptyX, emptyY);
-			if ((value - 1) / size == emptyY && (value - 1) % size == emptyX)
-				hamming--;
-			else if ((value - 1) / size == previous.emptyY && (value - 1) % size == previous.emptyX)
-				hamming++;
-		}
+		if (hamming == -1)
+			if (previous.hamming != -1) {
+				hamming = previous.hamming;
+				int value = previous.getValue(emptyX, emptyY);
+				if ((value - 1) / size == emptyY && (value - 1) % size == emptyX)
+					hamming--;
+				else if ((value - 1) / size == previous.emptyY && (value - 1) % size == previous.emptyX)
+					hamming++;
+			}
+			else
+				hamming = super.hamming();
 		return hamming;
 	}
 
@@ -56,23 +58,23 @@ public class ReferenceBoard extends AbstractBoard {
 
 	@Override
 	public int manhattan() {
-		if (manhattan == -1) {
-			manhattan = previous.manhattan() + 1;
-			int value = previous.getValue(emptyX, emptyY);
-			manhattan -= Math.abs((value - 1) / size - emptyY) + Math.abs((value - 1) % size - emptyX);
-			manhattan += Math.abs((value - 1) / size - previous.emptyY)
-					+ Math.abs((value - 1) % size - previous.emptyX);
-		}
-		return manhattan;
+		if (manhattan == -1)
+			if (previous.manhattan != -1) {
+				manhattan = previous.manhattan;
+				int value = previous.getValue(emptyX, emptyY);
+				manhattan -= Math.abs((value - 1) / size - emptyY) + Math.abs((value - 1) % size - emptyX);
+				manhattan += Math.abs((value - 1) / size - previous.emptyY)
+						+ Math.abs((value - 1) % size - previous.emptyX);
+			}
+			else
+				manhattan = super.manhattan();
+		return manhattan + moves;
 	}
 
 	@Override
 	protected AbstractBoard move(int x, int y) {
 		ReferenceBoard reference = new ReferenceBoard(this, x, y);
-		if (depth < 1)
-			return reference;
-		else
-			return new Board(reference.toArray(), x, y, moves, reference.hamming, reference.manhattan, reference.jay);
+		return new Board(reference.toArray(), x, y, moves, reference.hamming, reference.manhattan);
 	}
 
 	@Override

@@ -80,7 +80,7 @@ public class Solver {
 
 	@Override
 	public String toString() {
-		String result = solution.toString();
+		String result = solution == null ? solution.toString() : "[]";
 		return result.substring(1, result.length() - 1).replace(", ", "\n") + "Number of moves to solution: "
 				+ solution.size() + "\n";
 	}

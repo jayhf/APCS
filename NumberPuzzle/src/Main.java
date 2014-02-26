@@ -10,6 +10,7 @@ public class Main {
 		for (int y = 0; y < size; y++)
 			for (int x = 0; x < size; x++)
 				board[x][y] = s.nextInt();
+		s.close();
 		return new Board(board);
 	}
 

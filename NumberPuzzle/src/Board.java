@@ -26,11 +26,10 @@ public class Board extends AbstractBoard {
 		init();
 	}
 
-	public Board(int[][] board, int x, int y, int moves, int hamming, int manhattan, int jay) {
+	public Board(int[][] board, int x, int y, int moves, int hamming, int manhattan) {
 		this(board, x, y, moves);
 		this.hamming = hamming;
 		this.manhattan = manhattan;
-		this.jay = jay;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 
 public abstract class AbstractBoard {
-	protected int emptyX, emptyY, hamming = -1, manhattan = -1, jay = -1, hashCode = -1, moves, size = -1;
+	protected int emptyX, emptyY, hamming = -1, manhattan = -1, hashCode = -1, moves, size = -1;
 
 	public AbstractBoard() {}
 
@@ -39,7 +39,7 @@ public abstract class AbstractBoard {
 
 	public int hamming() {
 		if (hamming == -1) {
-			hamming = moves;
+			hamming = 0;
 			int i = 0;
 			for (int y = 0; y < size; y++)
 				for (int x = 0; x < size; x++)
@@ -47,7 +47,7 @@ public abstract class AbstractBoard {
 						hamming++;
 			hamming--;
 		}
-		return hamming;
+		return hamming + moves;
 	}
 
 	@Override
@@ -81,24 +81,15 @@ public abstract class AbstractBoard {
 			return hamming == moves;
 	}
 
-	public int jayHeuristic() {
-		if (jay == -1) {
-			jay = 0;
-			for (int y = 0; y < size; y++)
-				for (int x = 0; x < size; x++) {
-					int value = getValue(x, y);
-					jay += Math.abs((value - 1) / size - y) + Math.abs((value - 1) % size - x);
-				}
-			int value = getValue(emptyX, emptyY);
-			jay -= Math.abs((value - 1) / size - emptyY) + Math.abs((value - 1) % size - emptyX);
-			jay = 3 * jay / 2 + moves;
-		}
-		return jay;
+	public int jayHeuristic(double factor) {
+		if (manhattan == -1)
+			manhattan();
+		return manhattan + (int) (moves * factor);
 	}
 
 	public int manhattan() {
 		if (manhattan == -1) {
-			manhattan = moves;
+			manhattan = 0;
 			for (int y = 0; y < size; y++)
 				for (int x = 0; x < size; x++) {
 					int value = getValue(x, y);
@@ -107,7 +98,7 @@ public abstract class AbstractBoard {
 			int value = getValue(emptyX, emptyY);
 			manhattan -= Math.abs((value - 1) / size - emptyY) + Math.abs((value - 1) % size - emptyX);
 		}
-		return manhattan;
+		return manhattan + moves;
 	}
 
 	protected abstract AbstractBoard move(int x, int y);
