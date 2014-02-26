@@ -4,6 +4,7 @@ public class Board extends AbstractBoard {
 	protected int[][] board;
 
 	public Board(int[][] board) {
+		super(board.length, 0);
 		this.board = board;
 		moves = 0;
 		OUTER:
@@ -14,27 +15,20 @@ public class Board extends AbstractBoard {
 					emptyY = y;
 					break OUTER;
 				}
-		init();
 	}
 
 	public Board(int[][] board, int emptyX, int emptyY, int moves) {
+		super(board.length, moves);
 		this.board = board;
 		this.emptyX = emptyX;
 		this.emptyY = emptyY;
 		hashCode = Arrays.deepHashCode(board);
-		this.moves = moves;
-		init();
 	}
 
 	public Board(int[][] board, int x, int y, int moves, int hamming, int manhattan) {
 		this(board, x, y, moves);
 		this.hamming = hamming;
 		this.manhattan = manhattan;
-	}
-
-	@Override
-	public int getSize() {
-		return board.length;
 	}
 
 	@Override
@@ -49,13 +43,6 @@ public class Board extends AbstractBoard {
 		return true;
 	}
 
-	/*
-	 * @Override protected AbstractBoard move(int x,int y) { int[][] newBoard = new
-	 * int[board.length][board.length]; for (int i = 0; i < newBoard.length; i++) System.arraycopy(board[i], 0,
-	 * newBoard[i], 0, board.length); newBoard[emptyX][emptyY] = newBoard[x][y]; newBoard[x][y] = 0; return new
-	 * Board(newBoard, x, y, moves + 1);
-	 * }
-	 */
 	@Override
 	protected AbstractBoard move(int x, int y) {
 		return new ReferenceBoard(this, x, y);

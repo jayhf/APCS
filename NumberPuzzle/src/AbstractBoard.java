@@ -1,9 +1,12 @@
 import java.util.LinkedList;
 
 public abstract class AbstractBoard {
-	protected int emptyX, emptyY, hamming = -1, manhattan = -1, hashCode = -1, moves, size = -1;
+	protected int emptyX, emptyY, hamming = -1, manhattan = -1, hashCode = -1, moves, size;
 
-	public AbstractBoard() {}
+	public AbstractBoard(int size, int moves) {
+		this.size = size;
+		this.moves = moves;
+	}
 
 	public boolean equals(AbstractBoard other) {
 		if (other.size != size)
@@ -33,7 +36,9 @@ public abstract class AbstractBoard {
 		return true;
 	}
 
-	protected abstract int getSize();
+	public int getSize() {
+		return size;
+	}
 
 	public abstract int getValue(int x, int y);
 
@@ -61,10 +66,6 @@ public abstract class AbstractBoard {
 			hashCode = Math.abs(hashCode);
 		}
 		return hashCode;
-	}
-
-	public void init() {
-		size = getSize();
 	}
 
 	public abstract boolean isSolvable();

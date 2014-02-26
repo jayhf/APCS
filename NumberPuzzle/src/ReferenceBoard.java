@@ -1,29 +1,13 @@
 import java.util.LinkedList;
 
 public class ReferenceBoard extends AbstractBoard {
-	private int depth;
 	private AbstractBoard previous;
 
 	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY) {
-		moves = board.moves + 1;
+		super(board.size, board.moves + 1);
 		previous = board;
 		emptyX = nowEmptyX;
 		emptyY = nowEmptyY;
-		init();
-	}
-
-	public ReferenceBoard(ReferenceBoard board, int nowEmptyX, int nowEmptyY) {
-		moves = board.moves + 1;
-		depth = board.depth + 1;
-		previous = board;
-		emptyX = nowEmptyX;
-		emptyY = nowEmptyY;
-		init();
-	}
-
-	@Override
-	protected int getSize() {
-		return previous.size;
 	}
 
 	@Override
