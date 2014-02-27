@@ -1,6 +1,16 @@
 import java.util.LinkedList;
 
 public abstract class AbstractBoard {
+	public static AbstractBoard solved(int size) {
+		int[][] solvedState = new int[size][size];
+		int j = 1;
+		for (int y = 0; y < size; y++)
+			for (int x = 0; x < size; x++)
+				solvedState[x][y] = j++;
+		solvedState[size - 1][size - 1] = 0;
+		return new Board(solvedState);
+	}
+	
 	protected int emptyX, emptyY, hamming = -1, manhattan = -1, hashCode = -1, moves, size;
 	
 	public AbstractBoard(int size, int moves) {

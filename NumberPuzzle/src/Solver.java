@@ -5,13 +5,24 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class Solver {
+	public static AbstractBoard scramble(AbstractBoard board, int moves) {
+		for (int i = 0; i < moves; i++) {
+			int r = 1;
+			Iterable<AbstractBoard> neighbors = board.neighbors();
+			for (AbstractBoard newBoard : neighbors)
+				if (Math.random() < 1.0 / r++)
+					board = newBoard;
+		}
+		return board;
+	}
+	
 	public static List<AbstractBoard> solve(AbstractBoard board) {
 		return solve(board, new ManhattanComparator());// java8: (b1,b2)->b1.manhattan()-b2.manhattan()
 	}
 	
 	public static List<AbstractBoard> solve(AbstractBoard board, Comparator<AbstractBoard> comparator) {
-		if (!board.isSolvable())
-			return null;
+		// if (!board.isSolvable())
+		// return null;
 		int[][] solvedState = new int[board.getSize()][board.getSize()];
 		int j = 1;
 		for (int y = 0; y < board.getSize(); y++)
@@ -72,7 +83,7 @@ public class Solver {
 	}
 	
 	public int moves() {
-		return solution.size();
+		return solution.size() - 1;
 	}
 	
 	@Override

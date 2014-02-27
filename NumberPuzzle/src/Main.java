@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Main {
@@ -17,20 +19,35 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		// System.out.println(new Board(new int[][] { { 1, 3 }, { 2, 0 } }).isSolvable());
 		// System.out.println(Solver.solve()));
-		AbstractBoard board = loadBoard(new File("files/puzzle45.txt")); // new AbstractBoard(new int[][]
-		// { {3,
-		// 2}, {1, 0}}); //
-		// loadAbstractBoard(new File("files/puzzle45.txt"));
-		/*
-		 * System.out.println(board); System.out.println(board.neighbors());
-		 * System.out.println(board.neighbors().iterator().next().neighbors());
-		 */
-		System.out.println(board.isSolvable());
+		// write(Solver.scramble(AbstractBoard.solved(6), 200), new File("test.txt")); 79 moves
+		// the optimal...)
+		// Solver.solve(loadBoard(new File("files/puzzle45.txt")));
+		AbstractBoard board = loadBoard(new File("files/jaypuzzle79.txt"));// files/puzzle4x4-hard2
+		System.out.println(new Solver(board, new ManhattanComparator()));
+		// Solver.scramble(new Board(solvedState), 1000).write(new File("test.txt"));
+		// System.out.println(new Solver(loadBoard(new File("test.txt"))));
+		// System.out.println(board.isSolvable());
 		/*
 		 * for (int i = 0; i < 10; i++) System.out.println(new Solver(board)); long time = System.nanoTime(); for (int i
 		 * = 0; i < 10; i++) System.out.println(new Solver(board)); System.out.println((System.nanoTime() - time) *
 		 * Math.pow(10, -9) / 10 + " seconds (average)");
 		 */
+		
+	}
+	
+	public static void write(AbstractBoard board, File file) {
+		PrintStream out = null;
+		try {
+			file.createNewFile();
+			out = new PrintStream(new FileOutputStream(file));
+			out.println(board.size);
+			out.println(board);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			if (out != null)
+				out.close();
+		}
 		
 	}
 }
