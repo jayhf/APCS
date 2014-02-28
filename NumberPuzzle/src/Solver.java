@@ -36,11 +36,11 @@ public class Solver {
 		boards.add(board);
 		AbstractBoard solution = null;
 		int i = 0;
-		int threshold = 10;
+		// int threshold = 10;
 		while (!boards.isEmpty()) {
 			i++;
-			if (i > threshold)
-				threshold *= 10;
+			// if (i > threshold)
+			// threshold *= 10;
 			AbstractBoard currentAbstractBoard = boards.remove();
 			if (currentAbstractBoard.equals(solved)) {
 				solution = currentAbstractBoard;
@@ -92,6 +92,6 @@ public class Solver {
 			return "No Solution Could Be Found!";
 		String result = solution.toString();
 		return result.substring(1, result.length() - 1).replace(", ", "\n") + "Number of moves to solution: "
-				+ solution.size() + "\n";
+				+ (solution.size() - 1) + "\n";
 	}
 }

@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Board extends AbstractBoard {
 	protected int[][] board;
 	
@@ -21,7 +19,6 @@ public class Board extends AbstractBoard {
 		this.board = board;
 		this.emptyX = emptyX;
 		this.emptyY = emptyY;
-		hashCode = Arrays.deepHashCode(board);
 	}
 	
 	public Board(int[][] board, int x, int y, int moves, int hamming, int manhattan) {

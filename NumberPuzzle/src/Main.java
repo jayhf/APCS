@@ -22,16 +22,23 @@ public class Main {
 		// write(Solver.scramble(AbstractBoard.solved(6), 200), new File("test.txt")); 79 moves
 		// the optimal...)
 		// Solver.solve(loadBoard(new File("files/puzzle45.txt")));
-		AbstractBoard board = loadBoard(new File("files/jaypuzzle79.txt"));// files/puzzle4x4-hard2
+		AbstractBoard board = loadBoard(new File("files/puzzle45.txt"));// files/puzzle4x4-hard2
+		// for (AbstractBoard b2 : b1.neighbors())
+		// System.out.println(b2.manhattan());
+		// System.out.println(board.manhattan());
+		// for (AbstractBoard neighbor : board.neighbors())
+		// System.out.println(neighbor.manhattan());
 		System.out.println(new Solver(board, new ManhattanComparator()));
 		// Solver.scramble(new Board(solvedState), 1000).write(new File("test.txt"));
 		// System.out.println(new Solver(loadBoard(new File("test.txt"))));
 		// System.out.println(board.isSolvable());
-		/*
-		 * for (int i = 0; i < 10; i++) System.out.println(new Solver(board)); long time = System.nanoTime(); for (int i
-		 * = 0; i < 10; i++) System.out.println(new Solver(board)); System.out.println((System.nanoTime() - time) *
-		 * Math.pow(10, -9) / 10 + " seconds (average)");
-		 */
+		
+		for (int i = 0; i < 3; i++)
+			System.out.println(new Solver(board));
+		long time = System.nanoTime();
+		for (int i = 0; i < 3; i++)
+			System.out.println(new Solver(board));
+		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 3 + " seconds (average)");
 		
 	}
 	

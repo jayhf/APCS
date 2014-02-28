@@ -1,13 +1,19 @@
 import java.util.LinkedList;
 
 public class ReferenceBoard extends AbstractBoard {
+	private int depth;
 	private AbstractBoard previous;
 	
 	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY) {
+		this(board, nowEmptyX, nowEmptyY, 0);
+	}
+	
+	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY, int depth) {
 		super(board.size, board.moves + 1);
 		previous = board;
 		emptyX = nowEmptyX;
 		emptyY = nowEmptyY;
+		this.depth = depth;
 	}
 	
 	@Override
@@ -44,14 +50,16 @@ public class ReferenceBoard extends AbstractBoard {
 				manhattan += Math.abs((value - 1) / size - previous.emptyY)
 						+ Math.abs((value - 1) % size - previous.emptyX);
 			} else
-				manhattan = super.manhattan();
+				super.manhattan();
 		return manhattan + moves;
 	}
 	
 	@Override
 	protected AbstractBoard move(int x, int y) {
-		ReferenceBoard reference = new ReferenceBoard(this, x, y);
-		return new Board(reference.toArray(), x, y, moves, reference.hamming, reference.manhattan);
+		ReferenceBoard reference = new ReferenceBoard(this, x, y, depth + 1);
+		if (depth < 2)
+			return reference;
+		return new Board(reference.toArray(), x, y, reference.moves, reference.hamming, reference.manhattan);
 	}
 	
 	@Override
