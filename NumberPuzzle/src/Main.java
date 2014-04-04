@@ -22,7 +22,7 @@ public class Main {
 		// write(Solver.scramble(AbstractBoard.solved(6), 200), new File("test.txt")); 79 moves
 		// the optimal...)
 		// Solver.solve(loadBoard(new File("files/puzzle45.txt")));
-		AbstractBoard board = loadBoard(new File("files/puzzle45.txt"));// files/puzzle4x4-hard2
+		AbstractBoard board = loadBoard(new File("files/puzzle4x4-hard2.txt"));// files/puzzle4x4-hard2
 		// for (AbstractBoard b2 : b1.neighbors())
 		// System.out.println(b2.manhattan());
 		// System.out.println(board.manhattan());
