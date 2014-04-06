@@ -4,6 +4,11 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+/**
+ * 
+ * @author Jay
+ * @version 1.0
+ */
 public class Main {
 	public static Board loadBoard(File file) throws FileNotFoundException {
 		Scanner s = new Scanner(file);
@@ -15,33 +20,40 @@ public class Main {
 		s.close();
 		return new Board(board);
 	}
-	
+
 	public static void main(String[] args) throws FileNotFoundException {
 		// System.out.println(new Board(new int[][] { { 1, 3 }, { 2, 0 } }).isSolvable());
 		// System.out.println(Solver.solve()));
 		// write(Solver.scramble(AbstractBoard.solved(6), 200), new File("test.txt")); 79 moves
 		// the optimal...)
+		System.out.println(new Solver(loadBoard(new File("files/puzzle42.txt"))).moves());
 		// Solver.solve(loadBoard(new File("files/puzzle45.txt")));
-		AbstractBoard board = loadBoard(new File("files/puzzle4x4-hard2.txt"));// files/puzzle4x4-hard2
+		// AbstractBoard board = loadBoard(new File("files/puzzle4x4-hard2.txt"));// files/puzzle4x4-hard2
 		// for (AbstractBoard b2 : b1.neighbors())
 		// System.out.println(b2.manhattan());
 		// System.out.println(board.manhattan());
 		// for (AbstractBoard neighbor : board.neighbors())
 		// System.out.println(neighbor.manhattan());
-		System.out.println(new Solver(board, new ManhattanComparator()));
+		// System.out.println(new Solver(board, new ManhattanComparator()));
 		// Solver.scramble(new Board(solvedState), 1000).write(new File("test.txt"));
 		// System.out.println(new Solver(loadBoard(new File("test.txt"))));
 		// System.out.println(board.isSolvable());
-		
-		for (int i = 0; i < 3; i++)
-			System.out.println(new Solver(board));
-		long time = System.nanoTime();
-		for (int i = 0; i < 3; i++)
-			System.out.println(new Solver(board));
-		System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 3 + " seconds (average)");
-		
+		// for (int i = 0; i < 3; i++)
+		// System.out.println(new Solver(board));
+		// long time = System.nanoTime();
+		// for (int i = 0; i < 3; i++)
+		// System.out.println(new Solver(board));
+		// System.out.println((System.nanoTime() - time) * Math.pow(10, -9) / 3 + " seconds (average)");
+		for (int i = 28; i <= 42; i += 2) {
+			AbstractBoard board = loadBoard(new File("files/puzzle" + i + ".txt"));
+			System.out.println("Puzzle " + i + ": " + new Solver(board).moves() + " moves");
+			long time = System.nanoTime();
+			// for (int j = 0; j < 3; j++)
+			Solver.solve(board, new ManhattanComparator());
+			System.out.println("Hamming" + ": " + (System.nanoTime() - time) / 1000000000.0 + "s");
+		}
 	}
-	
+
 	public static void write(AbstractBoard board, File file) {
 		PrintStream out = null;
 		try {
@@ -55,6 +67,5 @@ public class Main {
 			if (out != null)
 				out.close();
 		}
-		
 	}
 }

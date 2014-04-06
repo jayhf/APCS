@@ -1,5 +1,10 @@
 import java.util.LinkedList;
 
+/**
+ * 
+ * @author Jay
+ * @version 1.0
+ */
 public abstract class AbstractBoard {
 	public static AbstractBoard solved(int size) {
 		int[][] solvedState = new int[size][size];
@@ -10,14 +15,14 @@ public abstract class AbstractBoard {
 		solvedState[size - 1][size - 1] = 0;
 		return new Board(solvedState);
 	}
-	
+
 	protected int emptyX, emptyY, hamming = -1, manhattan = -1, hashCode = -1, moves, size;
-	
+
 	public AbstractBoard(int size, int moves) {
 		this.size = size;
 		this.moves = moves;
 	}
-	
+
 	public boolean equals(AbstractBoard other) {
 		if (other.size != size)
 			return false;
@@ -27,7 +32,7 @@ public abstract class AbstractBoard {
 					return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
@@ -45,13 +50,13 @@ public abstract class AbstractBoard {
 					return false;
 		return true;
 	}
-	
+
 	public int getSize() {
 		return size;
 	}
-	
+
 	public abstract int getValue(int x, int y);
-	
+
 	public int hamming() {
 		if (hamming == -1) {
 			hamming = 0;
@@ -64,7 +69,7 @@ public abstract class AbstractBoard {
 		}
 		return hamming + moves;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		if (hashCode == -1) {
@@ -77,7 +82,7 @@ public abstract class AbstractBoard {
 		}
 		return hashCode;
 	}
-	
+
 	public boolean isSolvable() {
 		int permutationmod2 = 0;
 		for (int y = 0; y < size; y++)
@@ -87,7 +92,7 @@ public abstract class AbstractBoard {
 			}
 		return permutationmod2 == 1 ^ (size - emptyX + size - emptyY) % 2 == 1;
 	}
-	
+
 	public boolean isSolved() {
 		if (hamming == -1) {
 			int i = 0;
@@ -99,13 +104,13 @@ public abstract class AbstractBoard {
 		} else
 			return hamming == moves;
 	}
-	
+
 	public int jayHeuristic(double factor) {
 		if (manhattan == -1)
 			manhattan();
 		return manhattan + (int) (moves * factor);
 	}
-	
+
 	public int manhattan() {
 		if (manhattan == -1) {
 			manhattan = 0;
@@ -119,9 +124,9 @@ public abstract class AbstractBoard {
 		}
 		return manhattan + moves;
 	}
-	
+
 	protected abstract AbstractBoard move(int x, int y);
-	
+
 	public Iterable<AbstractBoard> neighbors() {
 		LinkedList<AbstractBoard> neighbors = new LinkedList<AbstractBoard>();
 		if (emptyX > 0)
@@ -134,9 +139,9 @@ public abstract class AbstractBoard {
 			neighbors.add(move(emptyX, emptyY + 1));
 		return neighbors;
 	}
-	
+
 	protected abstract int[][] toArray();
-	
+
 	@Override
 	public String toString() {
 		int numberSize = (int) Math.floor(Math.log10(size * size) + 1) + 1;

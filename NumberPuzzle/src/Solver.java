@@ -4,6 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+/**
+ * 
+ * @author Jay
+ * @version 1.0
+ */
 public class Solver {
 	public static AbstractBoard scramble(AbstractBoard board, int moves) {
 		for (int i = 0; i < moves; i++) {
@@ -15,11 +20,11 @@ public class Solver {
 		}
 		return board;
 	}
-	
+
 	public static List<AbstractBoard> solve(AbstractBoard board) {
 		return solve(board, new ManhattanComparator());// java8: (b1,b2)->b1.manhattan()-b2.manhattan()
 	}
-	
+
 	public static List<AbstractBoard> solve(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		// if (!board.isSolvable())
 		// return null;
@@ -36,11 +41,8 @@ public class Solver {
 		boards.add(board);
 		AbstractBoard solution = null;
 		int i = 0;
-		// int threshold = 10;
 		while (!boards.isEmpty()) {
 			i++;
-			// if (i > threshold)
-			// threshold *= 10;
 			AbstractBoard currentAbstractBoard = boards.remove();
 			if (currentAbstractBoard.equals(solved)) {
 				solution = currentAbstractBoard;
@@ -63,29 +65,29 @@ public class Solver {
 		} else
 			return null;
 	}
-	
+
 	private List<AbstractBoard> solution;
-	
+
 	public Solver(AbstractBoard board) {
 		solution = solve(board);
 	}
-	
+
 	public Solver(AbstractBoard board, Comparator<AbstractBoard> comparator) {
 		solution = solve(board, comparator);
 	}
-	
+
 	public List<AbstractBoard> getMoves() {
 		return solution;
 	}
-	
+
 	public boolean isSolvable() {
 		return solution == null;
 	}
-	
+
 	public int moves() {
 		return solution.size() - 1;
 	}
-	
+
 	@Override
 	public String toString() {
 		if (solution == null)

@@ -1,13 +1,18 @@
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * This is an old file that is not being used any more.
+ * 
+ * @author Jay
+ * @version 1.0
+ */
 public class HashedQueue {
 	private HashMap<Integer, LinkedList<AbstractBoard>> boards = new HashMap<Integer, LinkedList<AbstractBoard>>();
 	private int current = 0;
-	
-	public HashedQueue() {
-	}
-	
+
+	public HashedQueue() {}
+
 	public void add(AbstractBoard board) {
 		int value = board.manhattan();
 		if (value < current)
@@ -16,11 +21,11 @@ public class HashedQueue {
 			boards.put(value, new LinkedList<AbstractBoard>());
 		boards.get(value).addFirst(board);
 	}
-	
+
 	public boolean isEmpty() {
 		return boards.isEmpty();
 	}
-	
+
 	public AbstractBoard remove() {
 		while (!boards.containsKey(current))
 			current++;

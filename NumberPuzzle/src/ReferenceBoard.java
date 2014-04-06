@@ -3,11 +3,11 @@ import java.util.LinkedList;
 public class ReferenceBoard extends AbstractBoard {
 	private int depth;
 	private AbstractBoard previous;
-	
+
 	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY) {
 		this(board, nowEmptyX, nowEmptyY, 0);
 	}
-	
+
 	public ReferenceBoard(AbstractBoard board, int nowEmptyX, int nowEmptyY, int depth) {
 		super(board.size, board.moves + 1);
 		previous = board;
@@ -15,7 +15,7 @@ public class ReferenceBoard extends AbstractBoard {
 		emptyY = nowEmptyY;
 		this.depth = depth;
 	}
-	
+
 	@Override
 	public int getValue(int x, int y) {
 		if (x == emptyX && y == emptyY)
@@ -24,7 +24,7 @@ public class ReferenceBoard extends AbstractBoard {
 			return previous.getValue(emptyX, emptyY);
 		return previous.getValue(x, y);
 	}
-	
+
 	@Override
 	public int hamming() {
 		if (hamming == -1)
@@ -39,7 +39,7 @@ public class ReferenceBoard extends AbstractBoard {
 				hamming = super.hamming();
 		return hamming;
 	}
-	
+
 	@Override
 	public int manhattan() {
 		if (manhattan == -1)
@@ -53,15 +53,15 @@ public class ReferenceBoard extends AbstractBoard {
 				super.manhattan();
 		return manhattan + moves;
 	}
-	
+
 	@Override
 	protected AbstractBoard move(int x, int y) {
 		ReferenceBoard reference = new ReferenceBoard(this, x, y, depth + 1);
-		if (depth < 2)
+		if (depth < 3)
 			return reference;
 		return new Board(reference.toArray(), x, y, reference.moves, reference.hamming, reference.manhattan);
 	}
-	
+
 	@Override
 	public Iterable<AbstractBoard> neighbors() {
 		LinkedList<AbstractBoard> neighbors = new LinkedList<AbstractBoard>();
@@ -75,7 +75,7 @@ public class ReferenceBoard extends AbstractBoard {
 			neighbors.add(move(emptyX, emptyY + 1));
 		return neighbors;
 	}
-	
+
 	@Override
 	protected int[][] toArray() {
 		int[][] result = previous.toArray();
