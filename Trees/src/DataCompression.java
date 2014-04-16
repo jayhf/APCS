@@ -6,27 +6,29 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class DataCompression {
+	private static final byte one = (byte) '1';
+	
 	public static void main(String[] args) throws IOException {
-		File f = new File("files/aesop.pre");
+		File f = new File("files/abra.pre");
 		FileInputStream in = new FileInputStream(f);
 		byte[] buffer = new byte[(int) f.length()];
 		in.read(buffer);
 		in.close();
 		LinkedList<Character> preCodes = new LinkedList<Character>();
-		byte one = (byte) '1';
-		int i = 0;
+		int i = 0, numChars = 0, numStars = 0;
 		while (true) {
-			char character = (char) buffer[i];
-			if (character == '0' || character == '1')
+			char character = (char) buffer[i++];
+			if (character == '*')
+				numStars++;
+			else
+				numChars++;
+			if (numStars + 2 == numChars)
 				break;
-			i++;
 			preCodes.add(character);
 		}
-		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>((buffer.length - preCodes.size()) * 8);
-		preCodes.removeLast();
+		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>((buffer.length - preCodes.size()) * 8 - 1);
 		for (; i < buffer.length - 1; i++)
 			queue.add(buffer[i] == one);
-		System.out.println(preCodes);
 		PrefixCodeTree tree = new PrefixCodeTree(preCodes);
 		System.out.println(tree.read(queue));
 	}
