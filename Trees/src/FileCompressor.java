@@ -5,13 +5,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class DataCompression {
+public class FileCompressor {
 	private static final byte one = (byte) '1';
 	
-	public static void main(String[] args) throws IOException {
-		File f = new File("files/abra.pre");
-		FileInputStream in = new FileInputStream(f);
-		byte[] buffer = new byte[(int) f.length()];
+	public static String decompress(File file) throws IOException {
+		FileInputStream in = new FileInputStream(file);
+		byte[] buffer = new byte[(int) file.length()];
 		in.read(buffer);
 		in.close();
 		LinkedList<Character> preCodes = new LinkedList<Character>();
@@ -26,10 +25,10 @@ public class DataCompression {
 				break;
 			preCodes.add(character);
 		}
-		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>((buffer.length - preCodes.size()) * 8 - 1);
+		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(buffer.length - preCodes.size() - 2);
 		for (; i < buffer.length - 1; i++)
 			queue.add(buffer[i] == one);
 		PrefixCodeTree tree = new PrefixCodeTree(preCodes);
-		System.out.println(tree.read(queue));
+		return tree.read(queue);
 	}
 }
