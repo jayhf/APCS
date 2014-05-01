@@ -5,9 +5,25 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.TreeMap;
 
+/**
+ * Represents a Prefix Code Tree, allowing data to be compressed.
+ * 
+ * @author Jay Fleischer
+ * @version 1.0
+ */
 public class PrefixCodeTree {
 	private char character;
 	private PrefixCodeTree left = null, right = null;
+	
+	/**
+	 * Creates a prefix code tree given the depths of the passed characters
+	 * 
+	 * @param m
+	 *            - a map of depths to all of the characters at each of those depths
+	 */
+	public PrefixCodeTree(Map<Integer, Queue<Character>> m) {
+		this(m, 0);
+	}
 	
 	private PrefixCodeTree(Map<Integer, Queue<Character>> map, int depth) {
 		if (map.containsKey(depth)) {
@@ -22,6 +38,12 @@ public class PrefixCodeTree {
 		}
 	}
 	
+	/**
+	 * Creates a prefix code tree from a queue of characters from a precode String
+	 * 
+	 * @param chars
+	 *            - the queue of characters
+	 */
 	public PrefixCodeTree(Queue<Character> chars) {
 		character = chars.poll();
 		if (character == '*') {
@@ -30,10 +52,11 @@ public class PrefixCodeTree {
 		}
 	}
 	
-	public PrefixCodeTree(TreeMap<Integer, Queue<Character>> m) {
-		this(m, 0);
-	}
-	
+	/**
+	 * Creates a map of characters to character codes
+	 * 
+	 * @return the map
+	 */
 	public Map<Character, Deque<Boolean>> generateMap() {
 		Map<Character, Deque<Boolean>> result = new TreeMap<Character, Deque<Boolean>>();
 		if (left != null) {
@@ -60,6 +83,13 @@ public class PrefixCodeTree {
 			return character;
 	}
 	
+	/**
+	 * Uses this precode tree to read the passed queue
+	 * 
+	 * @param queue
+	 *            - the queue to be decompressed
+	 * @return the String of the resulting decompressed data
+	 */
 	public String read(Queue<Boolean> queue) {
 		StringBuilder builder = new StringBuilder();
 		while (!queue.isEmpty())
@@ -67,6 +97,11 @@ public class PrefixCodeTree {
 		return builder.toString();
 	}
 	
+	/**
+	 * Creates the precode String for this tree
+	 * 
+	 * @return the precode String
+	 */
 	@Override
 	public String toString() {
 		return character + (left == null ? "" : left.toString()) + (right == null ? "" : right.toString());
