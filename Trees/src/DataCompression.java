@@ -11,12 +11,9 @@ import java.io.IOException;
  */
 public class DataCompression {
 	public static void main(String[] args) throws IOException {
-		BitOutputStream s = new BitOutputStream(System.out);
-		s.write(false);
-		for (int i = 0; i < 7; i++)
-			s.write(true);
-		s.write(92);
-		s.flush();
+		BitInputStream s = new BitInputStream(System.in);
+		for (int i = 0; i < 8; i++)
+			System.out.println(s.readBit());
 		s.close();
 		File f = new File("files/test.pre");
 		FileCompressor.compress(f, "Hello World!");

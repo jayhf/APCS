@@ -2,11 +2,21 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class BitInputStream extends InputStream {
-	private int currentInt = -1, bitsLeft = 0;
+	private int currentInt, bitsLeft = 0;
 	private InputStream stream;
 	
 	public BitInputStream(InputStream stream) {
 		this.stream = stream;
+	}
+	
+	@Override
+	public int available() throws IOException {
+		return stream.available();
+	}
+	
+	@Override
+	public void close() throws IOException {
+		stream.close();
 	}
 	
 	@Override

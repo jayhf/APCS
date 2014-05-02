@@ -16,9 +16,7 @@ public class BitOutputStream extends OutputStream {
 	}
 	
 	public void write(boolean b) throws IOException {
-		System.out.print(Integer.toBinaryString(next) + ":");
 		int value = (b ? 1 : 0) << 8 - ++bitsSoFar;
-		System.out.println(value);
 		next |= value;
 		if (bitsSoFar == 8) {
 			write(next);
