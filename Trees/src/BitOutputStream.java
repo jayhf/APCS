@@ -16,16 +16,19 @@ public class BitOutputStream extends OutputStream {
 	}
 	
 	public void write(boolean b) throws IOException {
-		int value = (b ? 1 : 0) << 8 - ++bitsSoFar;
+		int value = b ? 1 << 7 - bitsSoFar : 0;
+		bitsSoFar++;
 		next |= value;
 		if (bitsSoFar == 8) {
-			write(next);
+			stream.write(next);
 			next = 0;
+			bitsSoFar = 0;
 		}
 	}
 	
 	@Override
-	public void write(int i) throws IOException {
-		stream.write(i);
+	public void write(int b) throws IOException {
+		for (int i = 7; i >= 0; i--)
+			write((1 << i & b) != 0);
 	}
 }

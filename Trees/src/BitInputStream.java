@@ -21,14 +21,17 @@ public class BitInputStream extends InputStream {
 	
 	@Override
 	public int read() throws IOException {
-		return stream.read();
+		int result = 0;
+		for (int i = 0; i < 8; i++)
+			result = result << 1 | (readBit() ? 1 : 0);
+		return result;
 	}
 	
 	public boolean readBit() throws IOException {
 		if (bitsLeft == 0) {
-			currentInt = read();
+			currentInt = stream.read();
 			bitsLeft = 8;
 		}
-		return (currentInt << --bitsLeft & 1) == 1;
+		return (currentInt & 1 << --bitsLeft - 1) != 0;
 	}
 }

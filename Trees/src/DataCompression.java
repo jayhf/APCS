@@ -11,10 +11,18 @@ import java.io.IOException;
  */
 public class DataCompression {
 	public static void main(String[] args) throws IOException {
-		BitInputStream s = new BitInputStream(System.in);
-		for (int i = 0; i < 8; i++)
-			System.out.println(s.readBit());
-		s.close();
+		// BitInputStream s = new BitInputStream(System.in);
+		// BitOutputStream s2 = new BitOutputStream(System.out);
+		// for (int i = 0; i < 8; i++) {
+		// boolean b = s.readBit();
+		// // System.out.println(b);
+		// s2.write(b);
+		// }
+		// s.close();
+		// s2.close();
+		FileCompressor.compressJ(new File("files/test.jpre"), "this is a test");
+		System.out.println(FileCompressor.decompressJ(new File("files/test.jpre")));
+		// System.out.write('a');
 		File f = new File("files/test.pre");
 		FileCompressor.compress(f, "Hello World!");
 		System.out.println(FileCompressor.decompress(f));

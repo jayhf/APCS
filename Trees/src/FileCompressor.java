@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -92,6 +93,17 @@ public class FileCompressor {
 		}
 	}
 	
+	public static void compressJ(File file, String string) {
+		try {
+			BitOutputStream s = new BitOutputStream(new FileOutputStream(file));
+			for (int i = 0; i < string.length(); i++)
+				s.write(string.charAt(i));
+			s.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Decompresses a file and returns the decompressed string
 	 * 
@@ -125,5 +137,19 @@ public class FileCompressor {
 			queue.add(buffer[i] == one);
 		PrefixCodeTree tree = new PrefixCodeTree(preCodes);
 		return tree.read(queue);
+	}
+	
+	public static String decompressJ(File file) {
+		try {
+			String result = "";
+			BitInputStream s = new BitInputStream(new FileInputStream(file));
+			while (s.available() > 0)
+				result += (char) s.read();
+			s.close();
+			return result;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
