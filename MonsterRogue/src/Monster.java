@@ -1,6 +1,8 @@
 public class Monster implements MoveFinder {
-	public Monster(Dungeon dungeon){
-		dungeon.
+	private LinkedGraph<Site> graph;
+	
+	public Monster(Dungeon dungeon) {
+		graph = MonsterRogueUtils.parseDungeon(dungeon);
 	}
 	
 	@Override
@@ -10,6 +12,6 @@ public class Monster implements MoveFinder {
 	
 	@Override
 	public Site move(Site monster, Site rogue) {
-		return 
+		return MonsterRogueUtils.shortestPath(monster, rogue, graph);
 	}
 }
