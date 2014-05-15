@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -19,7 +18,6 @@ public class FileCompressor {
 		for (int i = 0; i < string.length(); i++)
 			count[string.charAt(i)]++;
 		double length = string.length();
-		System.out.println(Arrays.toString(count));
 		int numDistinct = 0;
 		for (int i = 0; i < count.length; i++)
 			if (count[i] > 0)
@@ -30,21 +28,12 @@ public class FileCompressor {
 				usedCount[j] = count[map[j++] = i];
 		int[] bits = new int[255];
 		double[] ratios = new double[255];
-		for (int i = 0, power = 1; i < 10; i++, power *= 2)
+		for (int i = 0, power = 1; power <= length * 2; i++, power *= 2)
 			for (int i2 = 0; i2 < 255; i2++)
-				if (count[i2] * power > length && bits[i2] == 0) {
+				if (count[i2] * power >= length && bits[i2] == 0) {
 					bits[i2] = i;
 					ratios[i2] = count[i2] * power / length;
 				}
-		for (int i = 0; i < 255; i++)
-			if (bits[i] != 0)
-				System.out.println((char) i + ": " + count[i]);
-		for (int i = 0; i < 255; i++)
-			if (bits[i] != 0)
-				System.out.println((char) i + ": " + bits[i]);
-		for (int i = 0; i < 255; i++)
-			if (bits[i] != 0)
-				System.out.println((char) i + ": " + ratios[i]);
 		double total = 0;
 		for (int i = 0; i < 255; i++)
 			if (bits[i] > 0)
@@ -53,7 +42,7 @@ public class FileCompressor {
 		double max = 0;
 		while (total < 1) {
 			for (int i = 0; i < 255; i++)
-				if (ratios[i] > max)
+				if (ratios[i] > max || ratios[i] == max && bits[i] < bits[maxIndex])
 					max = ratios[maxIndex = i];
 			if (total + Math.pow(2, -bits[maxIndex]) <= 1)
 				total += Math.pow(2, -bits[maxIndex]--);
@@ -61,10 +50,6 @@ public class FileCompressor {
 			max = 0;
 			maxIndex = 0;
 		}
-		System.out.println(total);
-		for (int i = 0; i < 255; i++)
-			if (bits[i] != 0)
-				System.out.println((char) i + ": " + bits[i]);
 		TreeMap<Integer, Queue<Character>> m = new TreeMap<Integer, Queue<Character>>();
 		for (int i = 0; i < 255; i++)
 			if (bits[i] != 0)
@@ -72,19 +57,19 @@ public class FileCompressor {
 					m.get(bits[i]).add((char) i);
 				else
 					m.put(bits[i], new LinkedList<Character>(Collections.singletonList((char) i)));
-		System.out.println(m);
 		PrefixCodeTree tree = new PrefixCodeTree(m);
-		System.out.println(tree);
 		Map<Character, Deque<Boolean>> a = tree.generateMap();
-		System.out.println(tree.generateMap());
 		try {
 			file.createNewFile();
-			PrintStream stream = new PrintStream(file);
-			stream.println(tree.toString());
+			StringBuilder output = new StringBuilder();
+			output.append(tree.toString());
+			output.append('\n');
 			for (int i = 0; i < string.length(); i++)
 				for (boolean b : a.get(string.charAt(i)))
-					stream.print(b ? '1' : '0');
-			stream.println();
+					output.append(b ? '1' : '0');
+			output.append("\n");
+			PrintStream stream = new PrintStream(file);
+			stream.print(output);
 			stream.flush();
 			stream.close();
 		} catch (IOException e) {

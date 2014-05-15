@@ -10,7 +10,6 @@ import java.util.Queue;
 import java.util.TreeMap;
 
 public class PreCodeGenerator {
-	
 	public static void main(String[] args) {
 		String in = "It works!";// "abracadabra!";// "ababeabadbababaaaaaeaaacc";
 		int[] count = new int[255];
@@ -18,17 +17,9 @@ public class PreCodeGenerator {
 			count[in.charAt(i)]++;
 		double length = in.length();
 		System.out.println(Arrays.toString(count));
-		int numDistinct = 0;
-		for (int i = 0; i < count.length; i++)
-			if (count[i] > 0)
-				numDistinct++;
-		int[] map = new int[numDistinct], usedCount = new int[numDistinct];
-		for (int i = 0, j = 0; i < count.length; i++)
-			if (count[i] != 0)
-				usedCount[j] = count[map[j++] = i];
 		int[] bits = new int[255];
 		double[] ratios = new double[255];
-		for (int i = 0, power = 1; i < 10; i++, power *= 2)
+		for (int i = 0, power = 1; power <= length * 2; i++, power *= 2)
 			for (int i2 = 0; i2 < 255; i2++)
 				if (count[i2] * power > length && bits[i2] == 0) {
 					bits[i2] = i;
@@ -89,6 +80,5 @@ public class PreCodeGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 }
