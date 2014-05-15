@@ -2,10 +2,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class LinkedGraph<E> implements GraphInterface<E> {
-	private HashMap<E, GraphNode> map;
+	private Map<E, GraphNode> map = new HashMap<E, GraphNode>();
 	
 	public void addDirectedEdge(E start, E end) {
 		GraphNode n1 = map.get(start);
@@ -33,8 +34,6 @@ public class LinkedGraph<E> implements GraphInterface<E> {
 	@Override
 	public Iterable<E> adjacentTo(E vertex) {
 		final GraphNode node = map.get(vertex);
-		if (node == null)
-			return null;
 		return new Iterable<E>() {
 			@Override
 			public Iterator<E> iterator() {
@@ -123,31 +122,6 @@ public class LinkedGraph<E> implements GraphInterface<E> {
 		public GraphNode(E e) {
 			this.e = e;
 			connected = new LinkedList<GraphNode>();
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			GraphNode other = (GraphNode) obj;
-			if (!connected.equals(other.connected))
-				return false;
-			if (!e.equals(other.e))
-				return false;
-			return true;
-		}
-		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + connected.hashCode();
-			result = prime * result + e.hashCode();
-			return result;
 		}
 		
 	}

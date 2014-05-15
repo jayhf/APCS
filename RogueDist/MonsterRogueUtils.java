@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 public class MonsterRogueUtils {
 	public static Iterable<Site> adjacentSites(Site site) {
-		return Arrays.asList(new Site[] { new Site(site.col() + 1, site.row() + 1),
-				new Site(site.col() - 1, site.row() + 1), new Site(site.col() - 1, site.row() - 1),
-				new Site(site.col() + 1, site.row() - 1), new Site(site.col() + 1, site.row()),
-				new Site(site.col(), site.row() + 1), new Site(site.col() - 1, site.row()),
-				new Site(site.col(), site.row() - 1) });
+		int r = site.col();
+		int c = site.row();
+		return Arrays.asList(new Site[] { new Site(r + 1, c + 1), new Site(r - 1, c + 1),
+				new Site(r - 1, c - 1), new Site(r + 1, c - 1), new Site(r + 1, c),
+				new Site(r, c + 1), new Site(r - 1, c), new Site(r, c - 1) });
 	}
 	
 	public static LinkedGraph<Site> parseDungeon(Dungeon dungeon) {
@@ -19,25 +19,31 @@ public class MonsterRogueUtils {
 				if (!dungeon.isWall(site))
 					graph.addVertex(site);
 			}
+		System.out.println(adjacentSites(new Site(1, 2)));
 		for (Site site : graph.vertices())
 			for (Site adjacent : adjacentSites(site))
-				if (dungeon.isLegalMove(site, adjacent))
-					graph.addEdge(site, adjacent);
+				if (dungeon.isLegalMove(site, adjacent)) {
+					graph.addDirectedEdge(site, adjacent);
+					System.out.println(site + "," + adjacent);
+				}
 		return graph;
 	}
 	
-	public static Site shortestPath(Site start, Site finish, LinkedGraph<Site> sites) {
+	public static LinkedList<Site> shortestPath(Site start, Site finish, LinkedGraph<Site> sites) {
 		HashMap<Site, Site> visited = new HashMap<Site, Site>();
 		visited.put(start, null);
 		LinkedList<Site> nearby = new LinkedList<Site>();
 		nearby.add(start);
+		LinkedList<Site> result = new LinkedList<Site>();
 		while (!nearby.isEmpty()) {
 			Site site = nearby.pollFirst();
 			if (site.equals(finish)) {
 				Site previous = site;
-				while (!visited.get(previous).equals(start))
+				while (!visited.get(previous).equals(start)) {
 					previous = visited.get(previous);
-				return previous;
+					result.addFirst(previous);
+				}
+				return result;
 			}
 			for (Site adjacent : sites.adjacentTo(site))
 				if (!visited.containsKey(adjacent)) {
@@ -45,6 +51,7 @@ public class MonsterRogueUtils {
 					visited.put(adjacent, site);
 				}
 		}
-		return start;
+		result.add(start);
+		return result;
 	}
 }
