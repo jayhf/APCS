@@ -12,32 +12,33 @@ import java.util.TreeMap;
  * @version 1.0
  */
 public class PrefixCodeTree {
-	private char character;
+	private char character, specialChar;
 	private PrefixCodeTree left = null, right = null;
-	
+
 	/**
 	 * Creates a prefix code tree given the depths of the passed characters
 	 * 
 	 * @param m
 	 *            - a map of depths to all of the characters at each of those depths
 	 */
-	public PrefixCodeTree(Map<Integer, Queue<Character>> m) {
-		this(m, 0);
+	public PrefixCodeTree(Map<Integer, Queue<Character>> m, char specialChar) {
+		this(m, 0, specialChar);
 	}
-	
-	private PrefixCodeTree(Map<Integer, Queue<Character>> map, int depth) {
+
+	private PrefixCodeTree(Map<Integer, Queue<Character>> map, int depth, char specialChar) {
+		this.specialChar = specialChar;
 		if (map.containsKey(depth)) {
 			Queue<Character> queue = map.get(depth);
 			character = queue.poll();
 			if (queue.isEmpty())
 				map.remove(depth);
 		} else {
-			character = '*';
-			left = new PrefixCodeTree(map, depth + 1);
-			right = new PrefixCodeTree(map, depth + 1);
+			character = specialChar;
+			left = new PrefixCodeTree(map, depth + 1, specialChar);
+			right = new PrefixCodeTree(map, depth + 1, specialChar);
 		}
 	}
-	
+
 	/**
 	 * Creates a prefix code tree from a queue of characters from a precode String
 	 * 
@@ -45,13 +46,24 @@ public class PrefixCodeTree {
 	 *            - the queue of characters
 	 */
 	public PrefixCodeTree(Queue<Character> chars) {
+		this(chars, '*');
+	}
+
+	/**
+	 * Creates a prefix code tree from a queue of characters from a precode String
+	 * 
+	 * @param chars
+	 *            - the queue of characters
+	 */
+	public PrefixCodeTree(Queue<Character> chars, char specialChar) {
+		this.specialChar = specialChar;
 		character = chars.poll();
-		if (character == '*') {
-			left = new PrefixCodeTree(chars);
-			right = new PrefixCodeTree(chars);
+		if (character == specialChar) {
+			left = new PrefixCodeTree(chars, specialChar);
+			right = new PrefixCodeTree(chars, specialChar);
 		}
 	}
-	
+
 	/**
 	 * Creates a map of characters to character codes
 	 * 
@@ -71,18 +83,18 @@ public class PrefixCodeTree {
 				entry.getValue().push(true);
 			result.putAll(map);
 		}
-		if (character != '*')
+		if (character != specialChar)
 			result.put(character, new LinkedList<Boolean>());
 		return result;
 	}
-	
+
 	private char process(Queue<Boolean> data) {
-		if (character == '*')
+		if (character == specialChar)
 			return data.poll() ? right.process(data) : left.process(data);
 		else
 			return character;
 	}
-	
+
 	/**
 	 * Uses this precode tree to read the passed queue
 	 * 
@@ -96,7 +108,7 @@ public class PrefixCodeTree {
 			builder.append(process(queue));
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Creates the precode String for this tree
 	 * 

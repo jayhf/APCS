@@ -30,6 +30,59 @@ public class FileCompressor {
 	 *            - the String to compress
 	 */
 	public static void compress(File file, String string) {
+		PrefixCodeTree tree = createPrefixCodeTree(string, '*');
+		Map<Character, Deque<Boolean>> a = tree.generateMap();
+		try {
+			file.createNewFile();
+			StringBuilder output = new StringBuilder();
+			output.append(tree.toString());
+			output.append('\n');
+			for (int i = 0; i < string.length(); i++)
+				for (boolean b : a.get(string.charAt(i)))
+					output.append(b ? '1' : '0');
+			output.append("\n");
+			PrintStream stream = new PrintStream(file);
+			stream.print(output);
+			stream.flush();
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void compressJ(File file, String string)
+	{
+		PrefixCodeTree tree = createPrefixCodeTree(string, '\uffff');
+		Map<Character, Deque<Boolean>> a = tree.generateMap();
+		try {
+			file.createNewFile();
+			BitOutputStream s = new BitOutputStream(new FileOutputStream(file));
+			String treeString = tree.toString();
+			int bitsAtEnd = (11 - treeString.length() % 8) % 8;
+			for (int i = 0; i < string.length(); i++)
+				bitsAtEnd = (bitsAtEnd + 8 - a.get(string.charAt(i)).size()) % 8;
+			s.write((bitsAtEnd & 4) != 0);
+			s.write((bitsAtEnd & 2) != 0);
+			s.write((bitsAtEnd & 1) != 0);
+			for (int i = 0; i < treeString.length(); i++) {
+				char c = treeString.charAt(i);
+				if (c == '\uffff')
+					s.write(true);
+				else {
+					s.write(false);
+					s.write(c);
+				}
+			}
+			for (int i = 0; i < string.length(); i++)
+				for (boolean b : a.get(string.charAt(i)))
+					s.write(b);
+			s.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static PrefixCodeTree createPrefixCodeTree(String string, char specialChar) {
 		int[] count = new int[255];
 		for (int i = 0; i < string.length(); i++)
 			count[string.charAt(i)]++;
@@ -38,7 +91,6 @@ public class FileCompressor {
 		for (int i = 0; i < count.length; i++)
 			if (count[i] > 0)
 				numDistinct++;
-		PrefixCodeTree tree;
 		if (numDistinct > 1) {
 			int[] bits = new int[255];
 			double[] ratios = new double[255];
@@ -71,40 +123,13 @@ public class FileCompressor {
 						m.get(bits[i]).add((char) i);
 					else
 						m.put(bits[i], new LinkedList<Character>(Collections.singletonList((char) i)));
-			tree = new PrefixCodeTree(m);
+			return new PrefixCodeTree(m, specialChar);
 		} else if (numDistinct == 1) {
-			Queue<Character> queue = new LinkedList<Character>(Arrays.asList('*', string.charAt(0), string.charAt(0)));
-			tree = new PrefixCodeTree(queue);
+			Queue<Character> queue = new LinkedList<Character>(Arrays.asList(specialChar, string.charAt(0),
+					string.charAt(0)));
+			return new PrefixCodeTree(queue);
 		} else
-			tree = new PrefixCodeTree(new LinkedList<Character>(Arrays.asList('A')));
-		Map<Character, Deque<Boolean>> a = tree.generateMap();
-		try {
-			file.createNewFile();
-			StringBuilder output = new StringBuilder();
-			output.append(tree.toString());
-			output.append('\n');
-			for (int i = 0; i < string.length(); i++)
-				for (boolean b : a.get(string.charAt(i)))
-					output.append(b ? '1' : '0');
-			output.append("\n");
-			PrintStream stream = new PrintStream(file);
-			stream.print(output);
-			stream.flush();
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void compressJ(File file, String string) {
-		try {
-			BitOutputStream s = new BitOutputStream(new FileOutputStream(file));
-			for (int i = 0; i < string.length(); i++)
-				s.write(string.charAt(i));
-			s.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			return new PrefixCodeTree(new LinkedList<Character>(Arrays.asList('A')));
 	}
 
 	/**
@@ -121,35 +146,55 @@ public class FileCompressor {
 		byte[] buffer = new byte[(int) file.length()];
 		in.read(buffer);
 		in.close();
-		LinkedList<Character> preCodes = new LinkedList<Character>();
+		LinkedList<Character> preCode = new LinkedList<Character>();
 		int i = 0, numChars = 0, numStars = 0;
-		while (true) {
+		while (numStars + 1 > numChars) {
 			char character = (char) buffer[i++];
 			if (character == '*')
 				numStars++;
 			else
 				numChars++;
-			if (numStars + 2 == numChars)
-				break;
-			preCodes.add(character);
+			preCode.add(character);
 		}
-		if (buffer.length - preCodes.size() - 2 == 0)
+		if (buffer.length - preCode.size() - 2 == 0)
 			return "";
-		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(buffer.length - preCodes.size() - 2);
-		for (; i < buffer.length - 1; i++)
+		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(buffer.length - preCode.size() - 2);
+		for (i++; i < buffer.length - 1; i++)
 			queue.add(buffer[i] == one);
-		PrefixCodeTree tree = new PrefixCodeTree(preCodes);
+		PrefixCodeTree tree = new PrefixCodeTree(preCode);
 		return tree.read(queue);
 	}
 
 	public static String decompressJ(File file) {
 		try {
-			String result = "";
 			BitInputStream s = new BitInputStream(new FileInputStream(file));
-			while (s.available() > 0)
-				result += (char) s.read();
+			int bitsAtEnd = 0;
+			bitsAtEnd += s.readBit() ? 4 : 0;
+			bitsAtEnd += s.readBit() ? 2 : 0;
+			bitsAtEnd += s.readBit() ? 1 : 0;
+			LinkedList<Character> preCode = new LinkedList<Character>();
+			int numChars = 0, numStars = 0;
+			while (numStars + 1 > numChars) {
+				boolean specialChar = s.readBit();
+				if (specialChar) {
+					numStars++;
+					preCode.add('\uffff');
+				}
+				else {
+					numChars++;
+					preCode.add((char) s.read());
+				}
+			}
+			if (s.available() == 0) {
+				s.close();
+				return "";
+			}
+			Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(8 * (int) file.length() - preCode.size() * 9 / 2 + 7);
+			while (s.bitsAvailable() > bitsAtEnd)
+				queue.add(s.readBit());
 			s.close();
-			return result;
+			PrefixCodeTree tree = new PrefixCodeTree(preCode, '\uffff');
+			return tree.read(queue);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

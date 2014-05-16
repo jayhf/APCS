@@ -20,11 +20,12 @@ public class DataCompression {
 		// }
 		// s.close();
 		// s2.close();
-		FileCompressor.compressJ(new File("files/test.jpre"), "this is a test");
-		System.out.println(FileCompressor.decompressJ(new File("files/test.jpre")));
-		// System.out.write('a');
+		// FileCompressor.compress(f, "Hello World!");
 		File f = new File("files/test.pre");
-		FileCompressor.compress(f, "Hello World!");
+		FileCompressor.compress(f, "this is a test");
 		System.out.println(FileCompressor.decompress(f));
+		FileCompressor.compressJ(new File("files/test.jpre"),
+				FileCompressor.decompress(new File("files/constitution.pre")));
+		System.out.println(FileCompressor.decompressJ(new File("files/test.jpre")));
 	}
 }
