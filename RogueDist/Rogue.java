@@ -16,7 +16,8 @@ public class Rogue implements MoveFinder {
 	@Override
 	public Site move(Site monster, Site rogue) {
 		// return new Site(s.nextInt() + rogue.row(), s.nextInt() + rogue.col());
-		return rogue;// new FunSite(rogue.row(), rogue.col());
+		// return rogue;// new FunSite(rogue.row(), rogue.col());
+		return MonsterRogueUtils.shortestPaths(rogue, monster, graph).get(0).get(1);
 	}
 	
 }

@@ -20,7 +20,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public class FileCompressor {
 	private static final byte one = (byte) '1';
-
+	
 	/**
 	 * Compresses the passed string and writes it to a file
 	 * 
@@ -49,7 +49,7 @@ public class FileCompressor {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void compressJ(File file, String string)
 	{
 		PrefixCodeTree tree = createPrefixCodeTree(string, '\uffff');
@@ -81,7 +81,7 @@ public class FileCompressor {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private static PrefixCodeTree createPrefixCodeTree(String string, char specialChar) {
 		int[] count = new int[255];
 		for (int i = 0; i < string.length(); i++)
@@ -123,6 +123,7 @@ public class FileCompressor {
 						m.get(bits[i]).add((char) i);
 					else
 						m.put(bits[i], new LinkedList<Character>(Collections.singletonList((char) i)));
+			System.out.println(m);
 			return new PrefixCodeTree(m, specialChar);
 		} else if (numDistinct == 1) {
 			Queue<Character> queue = new LinkedList<Character>(Arrays.asList(specialChar, string.charAt(0),
@@ -131,7 +132,7 @@ public class FileCompressor {
 		} else
 			return new PrefixCodeTree(new LinkedList<Character>(Arrays.asList('A')));
 	}
-
+	
 	/**
 	 * Decompresses a file and returns the decompressed string
 	 * 
@@ -164,7 +165,7 @@ public class FileCompressor {
 		PrefixCodeTree tree = new PrefixCodeTree(preCode);
 		return tree.read(queue);
 	}
-
+	
 	public static String decompressJ(File file) {
 		try {
 			BitInputStream s = new BitInputStream(new FileInputStream(file));

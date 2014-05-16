@@ -1,11 +1,12 @@
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class MonsterRogueUtils {
 	public static Iterable<Site> adjacentSites(Site site) {
-		int r = site.col();
-		int c = site.row();
+		int c = site.col();
+		int r = site.row();
 		return Arrays.asList(new Site[] { new Site(r + 1, c + 1), new Site(r - 1, c + 1),
 				new Site(r - 1, c - 1), new Site(r + 1, c - 1), new Site(r + 1, c),
 				new Site(r, c + 1), new Site(r - 1, c), new Site(r, c - 1) });
@@ -19,39 +20,43 @@ public class MonsterRogueUtils {
 				if (!dungeon.isWall(site))
 					graph.addVertex(site);
 			}
-		System.out.println(adjacentSites(new Site(1, 2)));
 		for (Site site : graph.vertices())
 			for (Site adjacent : adjacentSites(site))
-				if (dungeon.isLegalMove(site, adjacent)) {
+				if (dungeon.isLegalMove(site, adjacent))
 					graph.addDirectedEdge(site, adjacent);
-					System.out.println(site + "," + adjacent);
-				}
 		return graph;
 	}
 	
-	public static LinkedList<Site> shortestPath(Site start, Site finish, LinkedGraph<Site> sites) {
+	public static LinkedList<LinkedList<Site>> shortestPaths(Site start, Site finish, LinkedGraph<Site> sites) {
+		LinkedList<LinkedList<Site>> pathList = new LinkedList<LinkedList<Site>>();
 		HashMap<Site, Site> visited = new HashMap<Site, Site>();
 		visited.put(start, null);
-		LinkedList<Site> nearby = new LinkedList<Site>();
+		Queue<Site> nearby = new LinkedList<Site>();
 		nearby.add(start);
-		LinkedList<Site> result = new LinkedList<Site>();
+		boolean resultFound = false;
 		while (!nearby.isEmpty()) {
-			Site site = nearby.pollFirst();
+			Site site = nearby.poll();
 			if (site.equals(finish)) {
 				Site previous = site;
+				LinkedList<Site> path = new LinkedList<Site>();
+				path.add(finish);
 				while (!visited.get(previous).equals(start)) {
 					previous = visited.get(previous);
-					result.addFirst(previous);
+					path.addFirst(previous);
 				}
-				return result;
+				path.addFirst(start);
+				pathList.add(path);
+				visited.remove(finish);
+				resultFound = true;
 			}
-			for (Site adjacent : sites.adjacentTo(site))
-				if (!visited.containsKey(adjacent)) {
-					nearby.add(adjacent);
-					visited.put(adjacent, site);
-				}
+			if (!resultFound)
+				for (Site adjacent : sites.adjacentTo(site))
+					if (!visited.containsKey(adjacent) || adjacent.equals(finish)) {
+						nearby.add(adjacent);
+						visited.put(adjacent, site);
+					}
 		}
-		result.add(start);
-		return result;
+		System.out.println(pathList);
+		return pathList;
 	}
 }

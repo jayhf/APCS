@@ -24,6 +24,7 @@ public class DataCompression {
 		File f = new File("files/test.pre");
 		FileCompressor.compress(f, "this is a test");
 		System.out.println(FileCompressor.decompress(f));
+		System.out.println(FileCompressor.decompress(new File("files/constitution.pre")));
 		FileCompressor.compressJ(new File("files/test.jpre"),
 				FileCompressor.decompress(new File("files/constitution.pre")));
 		System.out.println(FileCompressor.decompressJ(new File("files/test.jpre")));

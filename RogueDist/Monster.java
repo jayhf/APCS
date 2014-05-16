@@ -12,6 +12,6 @@ public class Monster implements MoveFinder {
 	
 	@Override
 	public Site move(Site monster, Site rogue) {
-		return MonsterRogueUtils.shortestPath(monster, rogue, graph).get(1);
+		return MonsterRogueUtils.shortestPaths(monster, rogue, graph).get(0).get(1);
 	}
 }
