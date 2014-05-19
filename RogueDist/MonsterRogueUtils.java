@@ -29,32 +29,41 @@ public class MonsterRogueUtils {
 	
 	public static LinkedList<LinkedList<Site>> shortestPaths(Site start, Site finish, LinkedGraph<Site> sites) {
 		LinkedList<LinkedList<Site>> pathList = new LinkedList<LinkedList<Site>>();
-		HashMap<Site, Site> visited = new HashMap<Site, Site>();
+		HashMap<Site, LinkedList<Site>> visited = new HashMap<Site, LinkedList<Site>>();
+		HashMap<Site, Integer> distancesAway = new HashMap<Site, Integer>();
 		visited.put(start, null);
 		Queue<Site> nearby = new LinkedList<Site>();
+		Queue<Site> nextToCheck = new LinkedList<Site>();
 		nearby.add(start);
 		boolean resultFound = false;
-		while (!nearby.isEmpty()) {
-			Site site = nearby.poll();
-			if (site.equals(finish)) {
-				Site previous = site;
-				LinkedList<Site> path = new LinkedList<Site>();
-				path.add(finish);
-				while (!visited.get(previous).equals(start)) {
-					previous = visited.get(previous);
-					path.addFirst(previous);
-				}
-				path.addFirst(start);
-				pathList.add(path);
-				visited.remove(finish);
-				resultFound = true;
-			}
-			if (!resultFound)
-				for (Site adjacent : sites.adjacentTo(site))
-					if (!visited.containsKey(adjacent) || adjacent.equals(finish)) {
-						nearby.add(adjacent);
-						visited.put(adjacent, site);
+		int currentDepth = -1;
+		while (!nextToCheck.isEmpty() && !resultFound) {
+			nearby = nextToCheck;
+			nextToCheck = new LinkedList<Site>();
+			currentDepth++;
+			while (!nearby.isEmpty()) {
+				Site site = nearby.poll();
+				if (site.equals(finish)) {
+					Site previous = site;
+					LinkedList<Site> path = new LinkedList<Site>();
+					path.add(finish);
+					while (!visited.get(previous).equals(start)) {
+						previous = visited.get(previous);
+						path.addFirst(previous);
 					}
+					path.addFirst(start);
+					pathList.add(path);
+					visited.remove(finish);
+					resultFound = true;
+				}
+				if (!resultFound)
+					for (Site adjacent : sites.adjacentTo(site))
+						if (!visited.containsKey(adjacent) || distancesAway.get(site)) {
+							nextToCheck.add(adjacent);
+							
+							visited.put(adjacent, site);
+						}
+			}
 		}
 		System.out.println(pathList);
 		return pathList;
