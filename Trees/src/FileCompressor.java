@@ -20,7 +20,7 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public class FileCompressor {
 	private static final byte one = (byte) '1';
-	
+
 	/**
 	 * Compresses the passed string and writes it to a file
 	 * 
@@ -49,7 +49,7 @@ public class FileCompressor {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void compressJ(File file, String string)
 	{
 		PrefixCodeTree tree = createPrefixCodeTree(string, '\uffff');
@@ -58,7 +58,7 @@ public class FileCompressor {
 			file.createNewFile();
 			BitOutputStream s = new BitOutputStream(new FileOutputStream(file));
 			String treeString = tree.toString();
-			int bitsAtEnd = (11 - treeString.length() % 8) % 8;
+			int bitsAtEnd = (13 - treeString.length() % 8) % 8;
 			for (int i = 0; i < string.length(); i++)
 				bitsAtEnd = (bitsAtEnd + 8 - a.get(string.charAt(i)).size()) % 8;
 			s.write((bitsAtEnd & 4) != 0);
@@ -81,7 +81,7 @@ public class FileCompressor {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static PrefixCodeTree createPrefixCodeTree(String string, char specialChar) {
 		int[] count = new int[255];
 		for (int i = 0; i < string.length(); i++)
@@ -94,9 +94,10 @@ public class FileCompressor {
 		if (numDistinct > 1) {
 			int[] bits = new int[255];
 			double[] ratios = new double[255];
-			for (int i = 0, power = 1; i < 10; i++, power *= 2)
+			for (int i = 0, power = 1, numLeft = numDistinct; numLeft > 0; i++, power *= 2)
 				for (int i2 = 0; i2 < 255; i2++)
 					if (count[i2] * power > length && bits[i2] == 0) {
+						numLeft--;
 						bits[i2] = i;
 						ratios[i2] = count[i2] * power / length;
 					}
@@ -105,15 +106,13 @@ public class FileCompressor {
 				if (bits[i] > 0)
 					total += Math.pow(2, -bits[i]);
 			int maxIndex = 0;
-			double max = 0;
 			while (total < 1) {
 				for (int i = 0; i < 255; i++)
-					if (ratios[i] > max)
-						max = ratios[maxIndex = i];
+					if (ratios[i] > ratios[maxIndex])
+						maxIndex = i;
 				if (total + Math.pow(2, -bits[maxIndex]) <= 1)
 					total += Math.pow(2, -bits[maxIndex]--);
 				ratios[maxIndex] /= 2;
-				max = 0;
 				maxIndex = 0;
 			}
 			TreeMap<Integer, Queue<Character>> m = new TreeMap<Integer, Queue<Character>>();
@@ -123,7 +122,6 @@ public class FileCompressor {
 						m.get(bits[i]).add((char) i);
 					else
 						m.put(bits[i], new LinkedList<Character>(Collections.singletonList((char) i)));
-			System.out.println(m);
 			return new PrefixCodeTree(m, specialChar);
 		} else if (numDistinct == 1) {
 			Queue<Character> queue = new LinkedList<Character>(Arrays.asList(specialChar, string.charAt(0),
@@ -132,7 +130,7 @@ public class FileCompressor {
 		} else
 			return new PrefixCodeTree(new LinkedList<Character>(Arrays.asList('A')));
 	}
-	
+
 	/**
 	 * Decompresses a file and returns the decompressed string
 	 * 
@@ -165,7 +163,7 @@ public class FileCompressor {
 		PrefixCodeTree tree = new PrefixCodeTree(preCode);
 		return tree.read(queue);
 	}
-	
+
 	public static String decompressJ(File file) {
 		try {
 			BitInputStream s = new BitInputStream(new FileInputStream(file));
@@ -191,7 +189,8 @@ public class FileCompressor {
 				return "";
 			}
 			Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(8 * (int) file.length() - preCode.size() * 9 / 2 + 7);
-			while (s.bitsAvailable() > bitsAtEnd)
+			int lastBitsAvailable = 0;
+			while (--lastBitsAvailable > bitsAtEnd || (lastBitsAvailable = s.bitsAvailable()) > bitsAtEnd)
 				queue.add(s.readBit());
 			s.close();
 			PrefixCodeTree tree = new PrefixCodeTree(preCode, '\uffff');
