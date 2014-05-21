@@ -50,6 +50,14 @@ public class FileCompressor {
 		}
 	}
 
+	/**
+	 * Compresses the passed string and writes it to a file in a more efficient binary format
+	 * 
+	 * @param file
+	 *            - the file to write it to
+	 * @param string
+	 *            - the String to compress
+	 */
 	public static void compressJ(File file, String string)
 	{
 		PrefixCodeTree tree = createPrefixCodeTree(string, '\uffff');
@@ -164,6 +172,15 @@ public class FileCompressor {
 		return tree.read(queue);
 	}
 
+	/**
+	 * Decompresses a file from a more efficient binary format and returns the decompressed string
+	 * 
+	 * @param file
+	 *            - the File to decompress
+	 * @return the decompressed String
+	 * @throws IOException
+	 *             if an error has occurred in reading the file
+	 */
 	public static String decompressJ(File file) {
 		try {
 			BitInputStream s = new BitInputStream(new FileInputStream(file));
@@ -199,5 +216,35 @@ public class FileCompressor {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * Reads a message from standard input
+	 */
+	public static void uncompress() {
+		while (System.in.available() == 0)
+			Thread.sleep(10);
+		byte[] buffer = new byte[System.in.available()];
+		System.in.read(buffer);
+		LinkedList<Character> preCode = new LinkedList<Character>();
+		int i = 0, numChars = 0, numStars = 0;
+		while (numStars + 1 > numChars) {
+			char character = (char) buffer[i++];
+			if (character == '*')
+				numStars++;
+			else
+				numChars++;
+			preCode.add(character);
+		}
+		PrefixCodeTree tree = new PrefixCodeTree(preCode);
+		tree.preorder();
+		if (buffer.length - preCode.size() - 2 == 0) {
+			System.out.println();
+			return;
+		}
+		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(buffer.length - preCode.size() - 2);
+		for (i++; i < buffer.length - 1; i++)
+			queue.add(buffer[i] == one);
+		return tree.read(queue);
 	}
 }

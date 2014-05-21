@@ -88,6 +88,29 @@ public class PrefixCodeTree {
 		return result;
 	}
 
+	/**
+	 * Traverses this tree and prints each character, its number of bits and its encoding
+	 */
+	public void preorder() {
+		System.out.println("character  bits  encoding");
+		System.out.println("-------------------------");
+		preorder(new LinkedList<Boolean>());
+	}
+
+	private void preorder(Deque<Boolean> currentCode) {
+		if (character != specialChar)
+			System.out.println(" " + character + "\t" + currentCode.size() + "\t"
+					+ currentCode.toString().replace("[, \\[\\]]", ""));
+		else {
+			currentCode.push(true);
+			right.preorder(currentCode);
+			currentCode.pop();
+			currentCode.push(false);
+			left.preorder();
+			currentCode.pop();
+		}
+	}
+
 	private char process(Queue<Boolean> data) {
 		if (character == specialChar)
 			return data.poll() ? right.process(data) : left.process(data);
