@@ -29,7 +29,7 @@ public class Game {
 	 * Run by entering a file name for arg[0] in the form dungeonX where X is A..Z
 	 */
 	public static void main(String[] args) throws Exception {
-		args = new String[] { "dungeonG" };
+		args = new String[] { "dungeonN" };
 		Scanner stdin = new Scanner(new File("dungeons/" + args[0] + ".txt"));
 		Game game = new Game(stdin);
 		// uncomment lines below and supply your own monsters and rogues
