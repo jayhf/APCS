@@ -24,7 +24,9 @@ public class DataCompression {
 		// File f = new File("files/test.jpre");
 		// FileCompressor.compressJ(f, "Another Test! WHEEEEEEEEEEEEEEEEEE! IT WORKS! IT WORKS! IT COMPLETELY WORKS!");
 		// System.out.println(FileCompressor.decompressJ(f));
-		test(FileCompressor.decompress(new File("files/lilwomen.pre")));
+		FileCompressor.uncompress();
+		// System.out.println(FileCompressor.decompress(new File("files/monalisa.pre")));
+		// test(FileCompressor.decompress(new File("files/lilwomen.pre")));
 		// System.out.println(FileCompressor.decompress(new File("files/constitution.pre")));
 		// /FileCompressor.compressJ(new File("files/test.jpre"),
 		// FileCompressor.decompress(new File("files/constitution.pre")));

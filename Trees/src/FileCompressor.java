@@ -220,10 +220,14 @@ public class FileCompressor {
 
 	/**
 	 * Reads a message from standard input
+	 * 
+	 * @throws IOException
 	 */
-	public static void uncompress() {
+	public static void uncompress() throws IOException {
 		while (System.in.available() == 0)
-			Thread.sleep(10);
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {}
 		byte[] buffer = new byte[System.in.available()];
 		System.in.read(buffer);
 		LinkedList<Character> preCode = new LinkedList<Character>();
@@ -245,6 +249,11 @@ public class FileCompressor {
 		Queue<Boolean> queue = new ArrayBlockingQueue<Boolean>(buffer.length - preCode.size() - 2);
 		for (i++; i < buffer.length - 1; i++)
 			queue.add(buffer[i] == one);
-		return tree.read(queue);
+		int numberOfBits = queue.size();
+		String message = tree.read(queue);
+		System.out.println(message);
+		System.out.println("Number of Bits\t= " + numberOfBits);
+		System.out.println("Number of Characters\t= " + message.length());
+		System.out.println("Compression Ratio\t= " + numberOfBits / (8.0 * message.length()));
 	}
 }
