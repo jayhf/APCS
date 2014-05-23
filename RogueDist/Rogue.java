@@ -1,9 +1,10 @@
-import java.util.Scanner;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 public class Rogue implements MoveFinder {
 	private LinkedGraph<Site> graph;
-	private Scanner s = new Scanner(System.in);
-	
+	private Set<Site> cycleSites=null;
 	public Rogue(Dungeon dungeon) {
 		graph = MonsterRogueUtils.parseDungeon(dungeon);
 	}
@@ -15,9 +16,23 @@ public class Rogue implements MoveFinder {
 	
 	@Override
 	public Site move(Site monster, Site rogue) {
-		// return new Site(s.nextInt() + rogue.row(), s.nextInt() + rogue.col());
-		// return rogue;// new FunSite(rogue.row(), rogue.col());
-		return MonsterRogueUtils.shortestPaths(rogue, monster, graph).get(0).get(1);
+		if(cycleSites==null)
+			cycleSites=MonsterRogueUtils.reachableCycleSites(rogue, graph);
+		Map<Site,Integer> rogueDistances=MonsterRogueUtils.createDistanceMap(rogue, Collections.<Site>emptyList(), graph);
+		Map<Site,Integer> monsterDistances=MonsterRogueUtils.createDistanceMap(monster, Collections.<Site>emptyList(), graph);
+		if(!monsterDistances.containsKey(rogue))
+			return rogue;
+		Site bestSite=null;
+		int bestDifference=Integer.MIN_VALUE;
+		for(Site site:cycleSites.size()>0?cycleSites:graph){
+			int difference=monsterDistances.get(site)-rogueDistances.get(site);
+			if(difference>bestDifference){
+				bestDifference=Math.max(bestDifference,difference);
+				bestSite=site;
+			}
+		}
+		if(rogue.equals(bestSite))
+			return rogue;
+		return MonsterRogueUtils.shortestPaths(rogue, bestSite, graph).get(0).get(1);
 	}
-	
 }

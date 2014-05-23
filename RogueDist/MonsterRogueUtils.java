@@ -16,9 +16,9 @@ public class MonsterRogueUtils {
 	public static List<Site> adjacentSites(Site site) {
 		int c = site.col();
 		int r = site.row();
-		return new LinkedList<Site>(Arrays.asList(new Site[] {new Site(r + 1, c + 1), new Site(r - 1, c + 1),
-				new Site(r - 1, c - 1), new Site(r + 1, c - 1), new Site(r + 1, c),
-				new Site(r, c + 1), new Site(r - 1, c), new Site(r, c - 1)}));
+		return new ArrayList<Site>(Arrays.asList(new Site[] {new Site(r + 1, c + 1), new Site(r + 1, c),
+				new Site(r + 1, c - 1),new Site(r, c - 1),new Site(r - 1, c - 1), new Site(r - 1, c),
+				new Site(r - 1, c + 1),new Site(r, c + 1)}));
 	}
 
 	public static Map<Site, Integer> createDistanceMap(Site start, Collection<Site> finishSites, LinkedGraph<Site> sites) {
@@ -73,17 +73,43 @@ public class MonsterRogueUtils {
 		Set<Site> reachableSites = new HashSet<Site>();
 		for (Entry<Site, Integer> set : createDistanceMap(start, Collections.<Site> emptyList(), sites).entrySet())
 			reachableSites.add(set.getKey());
-		LinkedList<Site> checkList = new LinkedList<Site>(reachableSites);
+		Set<Site> checkList = new HashSet<Site>(reachableSites);
 		while (!checkList.isEmpty()) {
-			Site current = checkList.pop();
+			Iterator<Site> checkItr=checkList.iterator();
+			Site current = checkItr.next();
+			checkItr.remove();
+			if(!reachableSites.contains(current))
+				continue;
 			List<Site> adjacentSites = new ArrayList<Site>(8);
 			Iterator<Site> adjacent = sites.adjacentTo(current).iterator();
 			while (adjacent.hasNext())
 				adjacentSites.add(adjacent.next());
 			adjacentSites.retainAll(reachableSites);
-			if (adjacentSites.size() <= 1) {
-				reachableSites.remove(current);
-				checkList.addAll(adjacentSites);
+			List<Site> allAdjacents=adjacentSites(current);
+			ListIterator<Site> itr=allAdjacents.listIterator();
+			while(itr.hasNext()){
+				if(!adjacentSites.contains(itr.next()))
+					itr.set(null);
+			}
+			outer:
+			for(int i=0;i<allAdjacents.size();i++){
+				int numberAdjacent=0;
+				boolean foundBreak=false;
+				for(int i2=0;i2<allAdjacents.size();i2++){
+					if(allAdjacents.get((i+i2)%allAdjacents.size())!=null){
+						numberAdjacent++;
+						if(foundBreak)
+							continue outer;
+					}
+					else
+						if(numberAdjacent>0)
+							foundBreak=true;
+				}
+				if(numberAdjacent<=4){
+					reachableSites.remove(current);
+					checkList.addAll(adjacentSites);
+					break;
+				}
 			}
 		}
 		ArrayList<Site> reachableSiteList = new ArrayList<Site>(reachableSites);
