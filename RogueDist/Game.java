@@ -21,12 +21,12 @@ public class Game {
 	// portable newline
 	private final static String NEWLINE = System.getProperty("line.separator");
 	private static final char ROGUE = '@'; // name of the rogue
-
+	
 	/**
 	 * Run by entering a file name for arg[0] in the form dungeonX where X is A..Z
 	 */
 	public static void main(String[] args) throws Exception {
-		args = new String[] {"dungeonO"};
+		args = new String[] { "dungeonD" };
 		Scanner stdin = new Scanner(new File("dungeons/" + args[0] + ".txt"));
 		Game game = new Game(stdin);
 		// uncomment lines below and supply your own monsters and rogues
@@ -37,14 +37,14 @@ public class Game {
 		System.out.println(game);
 		game.play();
 	}
-
+	
 	private Dungeon dungeon; // the dungeon
 	private MoveFinder monster; // the monster
 	private char monsterDisp; // name of the monster (A - Z)
 	private Site monsterSite; // location of monster
 	private MoveFinder rogue; // the rogue
 	private Site rogueSite; // location of rogue
-
+	
 	// initialize board from file
 	public Game(Scanner in) {
 		// read in data
@@ -76,7 +76,7 @@ public class Game {
 		rogue = null;
 		System.out.println("Completed constructing dungeon");
 	}
-
+	
 	/**
 	 * Add by J. Smith May 2012 Methods to add monster and rogue to game NOTE: be sure to call these before moving them!
 	 * Helps support GUI using ClassLoader to swap out players
@@ -84,24 +84,24 @@ public class Game {
 	public void addMonster(MoveFinder monster) {
 		this.monster = monster;
 	}
-
+	
 	public void addRogue(MoveFinder rogue) {
 		this.rogue = rogue;
 	}
-
+	
 	public Dungeon getDungeon() {
 		return dungeon;
 	}
-
+	
 	// return position of monster and rogue
 	public Site getMonsterSite() {
 		return monsterSite;
 	}
-
+	
 	public Site getRogueSite() {
 		return rogueSite;
 	}
-
+	
 	/*
 	 * May 2012: added for GUI play
 	 */
@@ -114,7 +114,7 @@ public class Game {
 		else
 			throw new RuntimeException("Monster caught cheating");
 	}
-
+	
 	public void moveRogue() {
 		if (rogue == null)
 			throw new IllegalStateException("You must add a rogue to play");
@@ -124,7 +124,7 @@ public class Game {
 		else
 			throw new RuntimeException("Rogue caught cheating");
 	}
-
+	
 	// play until monster catches the rogue
 	public void play() {
 		Scanner user = new Scanner(System.in);
@@ -153,14 +153,14 @@ public class Game {
 		}
 		System.out.println("Caught by monster");
 	}
-
+	
 	/*
 	 * May 2012 added for GUI to check that a monster and rogue are ready to play
 	 */
 	public boolean readyToStart() {
 		return monster != null && rogue != null;
 	}
-
+	
 	// string representation of game state (inefficient because of Site and string concat)
 	@Override
 	public String toString() {
