@@ -17,19 +17,16 @@ import java.util.Scanner;
  * 
  * May 2014 by J. Smith - ?? last year's note 3 above about moveCreature is not accurate - other notes are in place.
  *************************************************************************/
-
 public class Game {
-	
 	// portable newline
 	private final static String NEWLINE = System.getProperty("line.separator");
-	
 	private static final char ROGUE = '@'; // name of the rogue
-	
+
 	/**
 	 * Run by entering a file name for arg[0] in the form dungeonX where X is A..Z
 	 */
 	public static void main(String[] args) throws Exception {
-		args = new String[] { "dungeonN" };
+		args = new String[] {"dungeonO"};
 		Scanner stdin = new Scanner(new File("dungeons/" + args[0] + ".txt"));
 		Game game = new Game(stdin);
 		// uncomment lines below and supply your own monsters and rogues
@@ -40,18 +37,16 @@ public class Game {
 		System.out.println(game);
 		game.play();
 	}
-	
+
 	private Dungeon dungeon; // the dungeon
 	private MoveFinder monster; // the monster
 	private char monsterDisp; // name of the monster (A - Z)
 	private Site monsterSite; // location of monster
 	private MoveFinder rogue; // the rogue
-	
 	private Site rogueSite; // location of rogue
-	
+
 	// initialize board from file
 	public Game(Scanner in) {
-		
 		// read in data
 		int size = Integer.parseInt(in.nextLine());
 		char[][] board = new char[size][size];
@@ -59,14 +54,12 @@ public class Game {
 			String s = in.nextLine();
 			for (int j = 0; j < size; j++) {
 				board[i][j] = s.charAt(2 * j);
-				
 				// check for monster's location
 				if (board[i][j] >= 'A' && board[i][j] <= 'Z') {
 					monsterDisp = board[i][j];
 					board[i][j] = '.';
 					monsterSite = new Site(i, j);
 				}
-				
 				// check for rogue's location
 				if (board[i][j] == ROGUE) {
 					board[i][j] = '.';
@@ -83,7 +76,7 @@ public class Game {
 		rogue = null;
 		System.out.println("Completed constructing dungeon");
 	}
-	
+
 	/**
 	 * Add by J. Smith May 2012 Methods to add monster and rogue to game NOTE: be sure to call these before moving them!
 	 * Helps support GUI using ClassLoader to swap out players
@@ -91,24 +84,24 @@ public class Game {
 	public void addMonster(MoveFinder monster) {
 		this.monster = monster;
 	}
-	
+
 	public void addRogue(MoveFinder rogue) {
 		this.rogue = rogue;
 	}
-	
+
 	public Dungeon getDungeon() {
 		return dungeon;
 	}
-	
+
 	// return position of monster and rogue
 	public Site getMonsterSite() {
 		return monsterSite;
 	}
-	
+
 	public Site getRogueSite() {
 		return rogueSite;
 	}
-	
+
 	/*
 	 * May 2012: added for GUI play
 	 */
@@ -116,13 +109,12 @@ public class Game {
 		if (monster == null)
 			throw new IllegalStateException("You must add a monster to play");
 		Site next = monster.move(monsterSite, rogueSite);
-		
 		if (dungeon.isLegalMove(monsterSite, next))
 			monsterSite = next;
 		else
 			throw new RuntimeException("Monster caught cheating");
 	}
-	
+
 	public void moveRogue() {
 		if (rogue == null)
 			throw new IllegalStateException("You must add a rogue to play");
@@ -132,14 +124,13 @@ public class Game {
 		else
 			throw new RuntimeException("Rogue caught cheating");
 	}
-	
+
 	// play until monster catches the rogue
 	public void play() {
 		Scanner user = new Scanner(System.in);
 		for (int t = 1; true; t++) {
 			System.out.println("Move " + t);
 			System.out.println();
-			
 			// monster moves
 			if (monsterSite.equals(rogueSite))
 				break;
@@ -149,12 +140,10 @@ public class Game {
 			else
 				throw new RuntimeException("Monster caught cheating");
 			System.out.println(this);
-			
 			// rogue moves
 			if (monsterSite.equals(rogueSite))
 				break;
 			next = rogue.move(monsterSite, rogueSite);
-			
 			if (dungeon.isLegalMove(rogueSite, next))
 				rogueSite = next;
 			else
@@ -162,18 +151,16 @@ public class Game {
 			System.out.println(this);
 			user.nextLine();
 		}
-		
 		System.out.println("Caught by monster");
-		
 	}
-	
+
 	/*
 	 * May 2012 added for GUI to check that a monster and rogue are ready to play
 	 */
 	public boolean readyToStart() {
 		return monster != null && rogue != null;
 	}
-	
+
 	// string representation of game state (inefficient because of Site and string concat)
 	@Override
 	public String toString() {
@@ -198,5 +185,4 @@ public class Game {
 		}
 		return s;
 	}
-	
 }
