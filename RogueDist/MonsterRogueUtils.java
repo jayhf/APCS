@@ -16,11 +16,46 @@ public class MonsterRogueUtils {
 	public static List<Site> adjacentSites(Site site) {
 		int c = site.col();
 		int r = site.row();
-		return new ArrayList<Site>(Arrays.asList(new Site[] { new Site(r + 1, c + 1), new Site(r + 1, c),
+		return new ArrayList<Site>(Arrays.asList(new Site[] {new Site(r + 1, c + 1), new Site(r + 1, c),
 				new Site(r + 1, c - 1), new Site(r, c - 1), new Site(r - 1, c - 1), new Site(r - 1, c),
-				new Site(r - 1, c + 1), new Site(r, c + 1) }));
+				new Site(r - 1, c + 1), new Site(r, c + 1)}));
 	}
-	
+
+	public static Site bestMove(Site start, Site finish, LinkedGraph<Site> graph) {
+		if (start.equals(finish))
+			return start;
+		LinkedList<LinkedList<Site>> paths = MonsterRogueUtils.shortestPaths(start, finish, graph);
+		if (paths == null)
+			return start;
+		LinkedList<Site> adjacentOptions = new LinkedList<Site>();
+		for (LinkedList<Site> path : paths)
+			adjacentOptions.add(path.get(1));
+		int r = 0;
+		int c = 0;
+		for (Site adjacent : adjacentOptions) {
+			r += adjacent.row() - start.row();
+			c += adjacent.col() - start.col();
+		}
+		if (r > 1)
+			r = 1;
+		if (r < -1)
+			r = -1;
+		if (c > 1)
+			c = 1;
+		if (c < -1)
+			c = -1;
+		Site ideal = new Site(r + start.row(), c + start.col());
+		if (graph.hasEdge(start, ideal))
+			return ideal;
+		ideal = new Site(start.row(), c + start.col());
+		if (graph.hasEdge(start, ideal))
+			return ideal;
+		ideal = new Site(r + start.row(), start.col());
+		if (graph.hasEdge(start, ideal))
+			return ideal;
+		return start;
+	}
+
 	public static Map<Site, Integer> createDistanceMap(Site start, Collection<Site> finishSites, LinkedGraph<Site> sites) {
 		HashMap<Site, Integer> distanceMap = new HashMap<Site, Integer>();
 		distanceMap.put(start, 0);
@@ -47,12 +82,12 @@ public class MonsterRogueUtils {
 		}
 		return distanceMap;
 	}
-	
+
 	public static int distance(Site start, Site finish, LinkedGraph<Site> sites) {
 		Integer result = createDistanceMap(start, Collections.singletonList(finish), sites).get(finish);
 		return result == null ? -1 : result;
 	}
-	
+
 	public static LinkedGraph<Site> parseDungeon(Dungeon dungeon) {
 		LinkedGraph<Site> graph = new LinkedGraph<Site>();
 		for (int x = 0; x < dungeon.size(); x++)
@@ -67,7 +102,7 @@ public class MonsterRogueUtils {
 					graph.addDirectedEdge(site, adjacent);
 		return graph;
 	}
-	
+
 	public static Set<Site> reachableCycleSites(Site start, LinkedGraph<Site> sites) {
 		Set<Site> results = new HashSet<Site>();
 		Set<Site> reachableSites = new HashSet<Site>();
@@ -90,7 +125,8 @@ public class MonsterRogueUtils {
 			while (itr.hasNext())
 				if (!adjacentSites.contains(itr.next()))
 					itr.set(null);
-			outer: for (int i = 0; i < allAdjacents.size(); i++) {
+			outer:
+			for (int i = 0; i < allAdjacents.size(); i++) {
 				int numberAdjacent = 0;
 				boolean foundBreak = false;
 				for (int i2 = 0; i2 < allAdjacents.size(); i2++)
@@ -108,14 +144,6 @@ public class MonsterRogueUtils {
 				}
 			}
 		}
-		boolean[][] map = new boolean[10][10];
-		for (Site result : reachableSites)
-			map[result.row()][result.col()] = true;
-		for (int r = 0; r < 10; r++) {
-			for (int c = 0; c < 10; c++)
-				System.out.print(map[r][c] ? "0" : " ");
-			System.out.println();
-		}
 		ArrayList<Site> reachableSiteList = new ArrayList<Site>(reachableSites);
 		for (int i = 0; i < reachableSiteList.size(); i++)
 			for (int i2 = i + 1; i2 < reachableSiteList.size(); i2++) {
@@ -130,7 +158,7 @@ public class MonsterRogueUtils {
 							Set<Site> sitesInPaths = new HashSet<Site>();
 							sitesInPaths.addAll(paths.get(i3));
 							sitesInPaths.addAll(paths.get(i4));
-							if (sitesInPaths.size() == distance * 2) {
+							if (sitesInPaths.size() == distance * 2 || sitesInPaths.size() == distance * 2) {
 								Site m1 = paths.get(i3).get(distance / 2);
 								Site m2 = paths.get(i4).get(distance / 2);
 								if (distance(m1, m2, sites) != distance)
@@ -144,19 +172,11 @@ public class MonsterRogueUtils {
 							results.addAll(path);
 				}
 			}
-		map = new boolean[10][10];
-		for (Site result : reachableSites)
-			map[result.row()][result.col()] = true;
-		for (int r = 0; r < 10; r++) {
-			for (int c = 0; c < 10; c++)
-				System.out.print(map[r][c] ? "0" : " ");
-			System.out.println();
-		}
 		if (results.isEmpty())
 			return reachableSites;
 		return results;
 	}
-	
+
 	public static LinkedList<LinkedList<Site>> shortestPaths(Site start, Site finish, LinkedGraph<Site> sites) {
 		Map<Site, Integer> distancesAway = createDistanceMap(start, Collections.singletonList(finish), sites);
 		if (distancesAway.containsKey(finish)) {
@@ -170,7 +190,8 @@ public class MonsterRogueUtils {
 					Iterator<Site> adjacentItr = adjacentSites.iterator();
 					while (adjacentItr.hasNext()) {
 						Site adjacent = adjacentItr.next();
-						if (!distancesAway.containsKey(adjacent) || distancesAway.get(adjacent) != currentDepth)
+						if (!distancesAway.containsKey(adjacent) || distancesAway.get(adjacent) != currentDepth
+								|| !sites.hasEdge(path.getFirst(), adjacent))
 							adjacentItr.remove();
 					}
 					for (int i = 0; i < adjacentSites.size() - 1; i++) {

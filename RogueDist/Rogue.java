@@ -8,16 +8,16 @@ public class Rogue implements MoveFinder {
 	private Set<Site> cycleSites = null;
 	private Dungeon dungeon;
 	private LinkedGraph<Site> graph;
-	
+
 	public Rogue(Dungeon dungeon) {
 		graph = MonsterRogueUtils.parseDungeon(this.dungeon = dungeon);
 	}
-	
+
 	@Override
 	public String getDisplayData() {
 		return "R";
 	}
-	
+
 	@Override
 	public Site move(Site monster, Site rogue) {
 		if (cycleSites == null)
@@ -28,40 +28,55 @@ public class Rogue implements MoveFinder {
 				Collections.<Site> emptyList(), graph);
 		if (!monsterDistances.containsKey(rogue))
 			return rogue;
-		if (cycleSites.contains(rogue)) {
-			if (monsterDistances.get(rogue) == 1) {
-				Set<Site> options = new HashSet<Site>(cycleSites);
-				options.removeAll(graph.adjacentToList(monster));
+		if (cycleSites.contains(rogue) && monsterDistances.get(rogue) == 1) {
+			Set<Site> options = new HashSet<Site>(cycleSites);
+			options.removeAll(graph.adjacentToList(monster));
+			options.remove(monster);
+			options.retainAll(graph.adjacentToList(rogue));
+			Iterator<Site> itr = options.iterator();
+			while (itr.hasNext())
+				if (dungeon.isWall(itr.next()))
+					itr.remove();
+			if (options.isEmpty()) {
+				options = new HashSet<Site>(cycleSites);
 				options.remove(monster);
 				options.retainAll(graph.adjacentToList(rogue));
-				Iterator<Site> itr = options.iterator();
-				while (itr.hasNext())
-					if (dungeon.isWall(itr.next()))
-						itr.remove();
-				if (options.isEmpty()) {
-					options = new HashSet<Site>(cycleSites);
-					options.remove(monster);
-					options.retainAll(graph.adjacentToList(rogue));
-					return options.iterator().next();
-				}
 				return options.iterator().next();
 			}
-			else
-				return rogue;
+			return options.iterator().next();
 		}
 		else {
 			Site bestSite = null;
 			int bestDifference = Integer.MIN_VALUE;
+			int greatestMonsterDistance = Integer.MIN_VALUE;
 			for (Site site : cycleSites.size() > 0 ? cycleSites : graph) {
-				int difference = monsterDistances.get(site) - rogueDistances.get(site);
-				if (difference > bestDifference) {
+				int monsterDistance = monsterDistances.get(site);
+				int difference = monsterDistance - rogueDistances.get(site);
+				if (bestDifference < 1 && difference > bestDifference) {
 					bestDifference = Math.max(bestDifference, difference);
+					greatestMonsterDistance = monsterDistance;
+					bestSite = site;
+				}
+				else if (difference > 0 && monsterDistance > greatestMonsterDistance) {
+					greatestMonsterDistance = monsterDistance;
 					bestSite = site;
 				}
 			}
-			if (bestSite.equals(rogue))
-				return rogue;
-			return MonsterRogueUtils.shortestPaths(rogue, bestSite, graph).get(0).get(1);
+			if (bestDifference <= 0 && cycleSites.size() > 0)
+				for (Site site : graph) {
+					int monsterDistance = monsterDistances.get(site);
+					int difference = monsterDistance - rogueDistances.get(site);
+					if (bestDifference < 1 && difference > bestDifference) {
+						bestDifference = Math.max(bestDifference, difference);
+						greatestMonsterDistance = monsterDistance;
+						bestSite = site;
+					}
+					else if (difference > 0 && monsterDistance > greatestMonsterDistance) {
+						greatestMonsterDistance = monsterDistance;
+						bestSite = site;
+					}
+				}
+			return MonsterRogueUtils.bestMove(rogue, bestSite, graph);
 		}
 	}
 }
