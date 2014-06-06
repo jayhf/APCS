@@ -1,8 +1,8 @@
 
-public class Monster implements MoveFinder {
+public class JayMonster implements MoveFinder {
 	private LinkedGraph<Site> graph;
 
-	public Monster(Dungeon dungeon) {
+	public JayMonster(Dungeon dungeon) {
 		graph = MonsterRogueUtils.parseDungeon(dungeon);
 	}
 

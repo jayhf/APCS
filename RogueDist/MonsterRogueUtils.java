@@ -172,8 +172,6 @@ public class MonsterRogueUtils {
 							results.addAll(path);
 				}
 			}
-		if (results.isEmpty())
-			return reachableSites;
 		return results;
 	}
 

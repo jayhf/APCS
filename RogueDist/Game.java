@@ -26,14 +26,14 @@ public class Game {
 	 * Run by entering a file name for arg[0] in the form dungeonX where X is A..Z
 	 */
 	public static void main(String[] args) throws Exception {
-		args = new String[] {"dungeonH"};
+		args = new String[] {"dungeonF"};
 		Scanner stdin = new Scanner(new File("dungeons/" + args[0] + ".txt"));
 		Game game = new Game(stdin);
 		// uncomment lines below and supply your own monsters and rogues
 		// game.addMonster(new JSMonster(game.getDungeon()));
 		// game.addRogue(new JSRogue(game.getDungeon()));
-		game.addMonster(new Monster(game.getDungeon()));
-		game.addRogue(new Rogue(game.getDungeon()));
+		game.addMonster(new JayMonster(game.getDungeon()));
+		game.addRogue(new JayRogue(game.getDungeon()));
 		System.out.println(game);
 		game.play();
 	}

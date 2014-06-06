@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class Rogue implements MoveFinder {
+public class JayRogue implements MoveFinder {
 	private Set<Site> cycleSites = null;
 	private Dungeon dungeon;
 	private LinkedGraph<Site> graph;
 
-	public Rogue(Dungeon dungeon) {
+	public JayRogue(Dungeon dungeon) {
 		graph = MonsterRogueUtils.parseDungeon(this.dungeon = dungeon);
 	}
 
